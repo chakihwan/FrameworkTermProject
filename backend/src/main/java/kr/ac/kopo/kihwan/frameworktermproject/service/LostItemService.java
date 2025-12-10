@@ -1,5 +1,6 @@
 package kr.ac.kopo.kihwan.frameworktermproject.service;
 
+import kr.ac.kopo.kihwan.frameworktermproject.domain.ItemStatus;
 import kr.ac.kopo.kihwan.frameworktermproject.dto.LostItemDto;
 // ★ 중요: 엔티티 패키지명이 domain이면 .entity 대신 .domain 으로 수정!
 import kr.ac.kopo.kihwan.frameworktermproject.domain.LostItem;
@@ -29,8 +30,10 @@ public class LostItemService {
         item.setTitle(dto.getTitle());
         item.setContent(dto.getContent());
         item.setItemType(dto.getItemType());
-        item.setStatus("ING");
+
+        item.setStatus(ItemStatus.ING);
         item.setWriter(writer); // 작성자 연결 (JPA 연관관계)
+        // imagePath는 나중에 처리
 
         return lostItemRepository.save(item);
     }

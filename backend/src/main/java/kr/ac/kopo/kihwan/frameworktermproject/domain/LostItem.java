@@ -12,17 +12,26 @@ public class LostItem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;       // 제목
-    private String content;     // 내용 (장소, 특징 등)
+    private String title;
 
-    private String itemType;    // "LOST"(분실) 또는 "FOUND"(습득)
-    private String status;      // "ING"(찾는중) 또는 "DONE"(해결됨)
+    @Column(length = 1000) // 내용을 좀 길게 적을 수 있도록
+    private String content;
 
-    @CreationTimestamp          // INSERT 될 때 시간 자동 저장 (편함!)
+    private String itemType; // LOST, FOUND
+
+    // ★ 변경됨: 문자열 대신 Enum 사용 (DB에는 "ING", "DONE" 문자열로 저장됨)
+    @Enumerated(EnumType.STRING)
+    private ItemStatus status;
+
+    // 사진 파일 경로 (필수 아님 -> nullable = true)
+    // 나중에 사진 업로드 기능 구현할 때 여기에 파일 경로가 저장
+    @Column(nullable = true)
+    private String imagePath;
+
+    @CreationTimestamp
     private LocalDateTime regDate;
 
-    // 작성자 (N:1 관계 - 여러 글은 한 명의 작성자에 속함)
     @ManyToOne
-    @JoinColumn(name = "member_id") // DB에는 member_id로 저장됨
+    @JoinColumn(name = "member_id")
     private Member writer;
 }

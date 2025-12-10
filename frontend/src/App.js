@@ -116,8 +116,8 @@ function Home() {
             {/* 필터 탭 메뉴 */}
             <div className="filter-menu">
                 <button className={filter === 'ALL' ? 'active' : ''} onClick={() => setFilter('ALL')}>ALL</button>
-                <button className={filter === 'LOST' ? 'active' : ''} onClick={() => setFilter('LOST')}>LOST</button>
-                <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => setFilter('FOUND')}>FOUND</button>
+                <button className={filter === 'LOST' ? 'active' : ''} onClick={() => setFilter('LOST')}>잃어버렸어요ㅠㅠ</button>
+                <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => setFilter('FOUND')}>제가 찾았습니다!</button>
             </div>
 
             <div className="grid-container">

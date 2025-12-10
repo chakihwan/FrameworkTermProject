@@ -59,16 +59,40 @@ function App() {
 // 메인 화면
 function Home() {
     const [items, setItems] = useState([]);
-    const [filter, setFilter] = useState('ALL'); // 필터 상태: ALL, LOST, FOUND
+    const [filter, setFilter] = useState('ALL');
+    const [keyword, setKeyword] = useState(''); // ★ 검색어 상태 추가
     const navigate = useNavigate();
 
+    // 처음엔 전체 목록 가져오기
     useEffect(() => {
-        axios.get('http://localhost:8081/api/items')
-            .then(res => setItems(res.data))
-            .catch(err => console.log(err));
+        fetchItems();
     }, []);
 
-    // 필터링된 목록 계산
+    // 데이터 가져오기 함수 (검색어 있으면 같이 보냄)
+    const fetchItems = async (searchKeyword = '') => {
+        try {
+            const res = await axios.get('http://localhost:8081/api/items', {
+                params: { keyword: searchKeyword }
+            });
+            setItems(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // 엔터키 눌렀을 때 검색 실행
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            fetchItems(keyword);
+        }
+    };
+
+    // 돋보기 버튼 클릭 시 검색 실행
+    const onSearchClick = () => {
+        fetchItems(keyword);
+    };
+
+    // 필터링 (검색 결과 내에서 또 탭으로 거르기)
     const filteredItems = items.filter(item => {
         if (filter === 'ALL') return true;
         return item.itemType === filter;
@@ -76,32 +100,30 @@ function Home() {
 
     return (
         <div>
-            {/* ★ 변경: 탭 메뉴 (ALL | LOST | FOUND) */}
+            {/* ★ 검색창 영역 추가 */}
+            <div className="search-container">
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="SEARCH (제목, 내용)"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    onKeyDown={handleSearch}
+                />
+                <button className="search-btn" onClick={onSearchClick}>🔍</button>
+            </div>
+
+            {/* 필터 탭 메뉴 */}
             <div className="filter-menu">
-                <button
-                    className={filter === 'ALL' ? 'active' : ''}
-                    onClick={() => setFilter('ALL')}
-                >
-                    ALL
-                </button>
-                <button
-                    className={filter === 'LOST' ? 'active' : ''}
-                    onClick={() => setFilter('LOST')}
-                >
-                    LOST (분실)
-                </button>
-                <button
-                    className={filter === 'FOUND' ? 'active' : ''}
-                    onClick={() => setFilter('FOUND')}
-                >
-                    FOUND (습득)
-                </button>
+                <button className={filter === 'ALL' ? 'active' : ''} onClick={() => setFilter('ALL')}>ALL</button>
+                <button className={filter === 'LOST' ? 'active' : ''} onClick={() => setFilter('LOST')}>LOST</button>
+                <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => setFilter('FOUND')}>FOUND</button>
             </div>
 
             <div className="grid-container">
                 {filteredItems.length === 0 && (
                     <p style={{ textAlign: 'center', width: '100%', color: '#999', marginTop: '50px' }}>
-                        등록된 게시물이 없습니다.
+                        결과가 없습니다.
                     </p>
                 )}
 
@@ -109,21 +131,12 @@ function Home() {
                     <div key={item.id} className="card" onClick={() => navigate(`/items/${item.id}`)}>
                         <div className="card-image">
                             <span>{item.title.substring(0, 1)}</span>
-                            {item.status === 'DONE' && (
-                                <div className="solved-overlay">SOLVED</div>
-                            )}
+                            {item.status === 'DONE' && <div className="solved-overlay">SOLVED</div>}
                         </div>
-
                         <div>
-              <span className={`tag ${item.itemType === 'LOST' ? 'lost' : 'found'}`}>
-                {item.itemType}
-              </span>
+                            <span className={`tag ${item.itemType === 'LOST' ? 'lost' : 'found'}`}>{item.itemType}</span>
                         </div>
-
-                        <h3 className={`card-title ${item.status === 'DONE' ? 'done-text' : ''}`}>
-                            {item.title}
-                        </h3>
-
+                        <h3 className={`card-title ${item.status === 'DONE' ? 'done-text' : ''}`}>{item.title}</h3>
                         <p className="card-info">{new Date(item.regDate).toLocaleDateString()}</p>
                     </div>
                 ))}

@@ -2,7 +2,6 @@ package kr.ac.kopo.kihwan.frameworktermproject.service;
 
 import kr.ac.kopo.kihwan.frameworktermproject.domain.ItemStatus;
 import kr.ac.kopo.kihwan.frameworktermproject.dto.LostItemDto;
-// ★ 중요: 엔티티 패키지명이 domain이면 .entity 대신 .domain 으로 수정!
 import kr.ac.kopo.kihwan.frameworktermproject.domain.LostItem;
 import kr.ac.kopo.kihwan.frameworktermproject.domain.Member;
 import kr.ac.kopo.kihwan.frameworktermproject.repository.LostItemRepository;
@@ -10,6 +9,10 @@ import kr.ac.kopo.kihwan.frameworktermproject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 import java.util.List;
 
@@ -66,5 +69,36 @@ public class LostItemService {
     // 검색 기능 (제목 또는 내용 검색)
     public List<LostItem> searchItems(String keyword) {
         return lostItemRepository.findByTitleContainingOrContentContainingOrderByRegDateDesc(keyword, keyword);
+    }
+
+    @Transactional
+    public LostItem createItem(LostItemDto dto, MultipartFile file) throws IOException {
+        Member writer = memberRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+
+        LostItem item = new LostItem();
+        item.setTitle(dto.getTitle());
+        item.setContent(dto.getContent());
+        item.setItemType(dto.getItemType());
+        item.setStatus(ItemStatus.ING);
+        item.setWriter(writer);
+
+        // ★ 파일 저장 로직 추가
+        if (file != null && !file.isEmpty()) {
+            // 저장할 경로 (폴더 없으면 에러 나니까 꼭 만들어두세요!)
+            String uploadDir = "D:/lost_found_images/";
+
+            // 파일명 중복 방지를 위해 UUID 붙이기 (예: a1b2-c3d4_지갑.jpg)
+            String originalFilename = file.getOriginalFilename();
+            String savedFilename = UUID.randomUUID() + "_" + originalFilename;
+
+            // 실제 파일 저장
+            file.transferTo(new File(uploadDir + savedFilename));
+
+            // DB에는 파일 이름만 저장
+            item.setImagePath(savedFilename);
+        }
+
+        return lostItemRepository.save(item);
     }
 }

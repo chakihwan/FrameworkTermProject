@@ -158,30 +158,32 @@ const ItemDetail = () => {
                     {item.content}
                 </div>
 
-                {/* --- 아래는 기존 버튼들 (작성자 메뉴, 카톡 문의) --- */}
+                {/* --- 연락처/카톡 표시 영역 (Logic 수정됨) --- */}
+                {!isWriter && item.status !== 'DONE' && (
+                    <div style={{ textAlign: 'center', marginTop: '30px' }}>
 
-                {/* 작성자 전용 컨트롤 패널 */}
-                {isWriter && (
-                    <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#555' }}>⚙️ 관리 메뉴</span>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <button
-                                onClick={toggleStatus}
-                                style={{
-                                    padding: '8px 16px', cursor: 'pointer',
-                                    border: item.status === 'ING' ? 'none' : '1px solid #555',
-                                    backgroundColor: item.status === 'ING' ? '#555' : 'white',
-                                    color: item.status === 'ING' ? 'white' : '#555',
-                                    borderRadius: '4px', fontWeight: 'bold'
-                                }}>
-                                {item.status === 'ING' ? '✅ 해결 완료로 변경' : '🔄 다시 찾는 중으로'}
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                style={{ padding: '8px 16px', cursor: 'pointer', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
-                                🗑 삭제
-                            </button>
-                        </div>
+                        {/* Case 1: 카톡 링크가 있으면 -> 카톡 버튼 최우선 표시 */}
+                        {item.kakaoLink ? (
+                            <a href={item.kakaoLink} target="_blank" rel="noreferrer" style={{ display: 'inline-block', padding: '15px 40px', backgroundColor: '#FAE100', color: '#3B1E1E', textDecoration: 'none', fontWeight: 'bold', borderRadius: '50px', fontSize:'16px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
+                                💬 카카오톡으로 연락하기
+                            </a>
+                        ) : (
+                            /* Case 2: 카톡 없고, 전화번호 공개 동의(isPhoneOpen) 했을 때 */
+                            item.isPhoneOpen ? (
+                                <div style={{ padding:'20px', background:'#f0f8ff', borderRadius:'8px', color:'#333', display:'inline-block', border:'1px solid #add8e6' }}>
+                                    <div style={{fontSize:'12px', color:'#555', marginBottom:'5px'}}>작성자 연락처</div>
+                                    <div style={{fontSize:'18px', fontWeight:'bold'}}>
+                                        {currentUser ? item.writer?.phoneNumber : '🔒 로그인 후 확인 가능'}
+                                    </div>
+                                </div>
+                            ) : (
+                                /* Case 3: 둘 다 없을 때 -> 비밀댓글 유도 */
+                                <div style={{ padding:'15px', background:'#f9f9f9', borderRadius:'8px', color:'#888', display:'inline-block', fontSize:'13px' }}>
+                                    🔕 작성자가 연락처를 비공개했습니다.<br/>
+                                    아래 <b>비밀 댓글</b>을 남겨 연락처를 공유해보세요!
+                                </div>
+                            )
+                        )}
                     </div>
                 )}
 

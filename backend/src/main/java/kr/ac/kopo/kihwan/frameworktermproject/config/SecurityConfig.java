@@ -2,6 +2,7 @@ package kr.ac.kopo.kihwan.frameworktermproject.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,11 +32,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // CORS 설정 적용 (3000번 포트 허용)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // 요청 주소별 권한 설정
+                // 3. 주소별 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 로그인, 회원가입, 글 조회는 누구나 가능하게 열어둠
-                        .requestMatchers("/api/members/**", "/api/items/**").permitAll()
-                        // 그 외 나머지는 인증 필요 (지금은 딱히 없어서 다 열린 셈)
+                        // 회원가입, 로그인, 글쓰기(POST), 목록조회(GET), 이미지조회 등 모두 허용
+                        .requestMatchers("/api/members/**", "/api/items/**", "/images/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/items").permitAll() // 글쓰기 POST 명시적 허용
                         .anyRequest().authenticated()
                 );
 

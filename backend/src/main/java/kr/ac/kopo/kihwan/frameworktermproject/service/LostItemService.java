@@ -62,4 +62,9 @@ public class LostItemService {
         item.setStatus(status);
         return item; // 변경된 정보 리턴
     }
+
+    // 검색 기능 (제목 또는 내용 검색)
+    public List<LostItem> searchItems(String keyword) {
+        return lostItemRepository.findByTitleContainingOrContentContainingOrderByRegDateDesc(keyword, keyword);
+    }
 }

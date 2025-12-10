@@ -52,7 +52,7 @@ const WriteItem = () => {
                 <input placeholder="TITLE" value={title} onChange={(e)=>setTitle(e.target.value)} style={{ padding: '10px' }} />
                 <textarea placeholder="DETAILS..." value={content} onChange={(e)=>setContent(e.target.value)} rows="6" style={{ padding: '10px' }} />
 
-                <button type="submit" style={{ padding: '15px', background: 'black', color: 'white', border: 'none', cursor: 'pointer' }}>REGISTER</button>
+                <button type="submit" style={{ padding: '15px', background: 'black', color: 'white', border: 'none', cursor: 'pointer' }}>등록하기</button>
             </form>
         </div>
     );

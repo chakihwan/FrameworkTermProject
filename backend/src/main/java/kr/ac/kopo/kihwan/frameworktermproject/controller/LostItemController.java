@@ -48,4 +48,16 @@ public class LostItemController {
         ItemStatus status = ItemStatus.valueOf(statusStr); // 문자열("DONE")을 Enum으로 변환
         return lostItemService.updateStatus(id, status);
     }
+
+    // 목록 조회 + 검색 기능 통합 (GET /api/items?keyword=에어팟)
+    @GetMapping
+    public List<LostItem> list(@RequestParam(required = false) String keyword) {
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색어가 있으면 검색 결과 리턴
+            return lostItemService.searchItems(keyword);
+        } else {
+            // 검색어가 없으면 전체 목록 리턴
+            return lostItemService.getAllItems();
+        }
+    }
 }

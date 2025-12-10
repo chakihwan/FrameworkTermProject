@@ -6,6 +6,8 @@ import kr.ac.kopo.kihwan.frameworktermproject.dto.LostItemDto;
 import kr.ac.kopo.kihwan.frameworktermproject.service.LostItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +19,13 @@ public class LostItemController {
 
     private final LostItemService lostItemService;
 
-    // 글 쓰기
+    // 글 쓰기 (파일 업로드 포함)
     @PostMapping
-    public LostItem create(@RequestBody LostItemDto dto) {
-        return lostItemService.createItem(dto);
+    public LostItem create(
+            @ModelAttribute LostItemDto dto,           // 글자 데이터 (제목, 내용 등)
+            @RequestParam(required = false) MultipartFile file // 파일 데이터 (필수 아님)
+    ) throws IOException {
+        return lostItemService.createItem(dto, file);
     }
 
     @GetMapping("/{id}")

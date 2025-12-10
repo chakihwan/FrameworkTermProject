@@ -23,12 +23,6 @@ public class LostItemController {
         return lostItemService.createItem(dto);
     }
 
-    // 목록 조회
-    @GetMapping
-    public List<LostItem> list() {
-        return lostItemService.getAllItems();
-    }
-
     @GetMapping("/{id}")
     public LostItem getItem(@PathVariable Long id) {
         return lostItemService.getItem(id);

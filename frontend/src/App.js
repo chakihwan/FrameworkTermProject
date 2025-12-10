@@ -33,7 +33,7 @@ function App() {
                         <>
                             {/* 로그인 했을 때 */}
                             <span className="nav-user">{user.name}님</span>
-                            <span className="nav-btn" onClick={handleLogout}>LOGOUT</span>
+                            <span className="nav-btn" onClick={handleLogout}>Logout</span>
                         </>
                     ) : (
                         <>

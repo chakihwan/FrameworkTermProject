@@ -42,4 +42,24 @@ public class LostItemService {
     public List<LostItem> getAllItems() {
         return lostItemRepository.findAllByOrderByRegDateDesc();
     }
+
+    // 상세 조회 (글 하나만 가져오기)
+    public LostItem getItem(Long id) {
+        return lostItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 글이 없습니다."));
+    }
+
+    // 글 삭제
+    public void deleteItem(Long id) {
+        lostItemRepository.deleteById(id);
+    }
+
+    // 상태 변경 (ING <-> DONE)
+    @Transactional
+    public LostItem updateStatus(Long id, ItemStatus status) {
+        LostItem item = lostItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("글이 없습니다."));
+        item.setStatus(status);
+        return item; // 변경된 정보 리턴
+    }
 }

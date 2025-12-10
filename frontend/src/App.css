@@ -1,4 +1,4 @@
-/* 전체 폰트 및 배경: 깔끔한 흰색 + 명조체 느낌 */
+/* 기본 설정 */
 body {
   margin: 0;
   font-family: 'Georgia', 'Times New Roman', serif;
@@ -6,14 +6,14 @@ body {
   color: #333;
 }
 
-/* 상단 네비게이션바 */
+/* 네비게이션바 */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 40px 50px;
-  border-bottom: 1px solid #eee; /* 아주 연한 줄 */
-  margin-bottom: 60px;
+  padding: 30px 50px;
+  /* border-bottom: 1px solid #eee;  심플함을 위해 제거 가능 */
+  margin-bottom: 40px;
 }
 
 .logo {
@@ -25,88 +25,118 @@ body {
   text-transform: uppercase;
 }
 
-.nav-links a {
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a, .nav-btn {
   margin-left: 30px;
   text-decoration: none;
-  color: #555;
+  color: #888;
   font-size: 13px;
   letter-spacing: 1px;
+  cursor: pointer;
   transition: color 0.3s;
 }
 
-.nav-links a:hover {
+.nav-links a:hover, .nav-btn:hover {
   color: #000;
-  text-decoration: underline;
 }
 
-/* 메인 타이틀 영역 (CLASS CONTACT 스타일) */
-.page-title {
-  text-align: center;
-  margin-bottom: 80px;
+/* 로그인한 사용자 이름 표시 */
+.nav-user {
+  margin-left: 30px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
 }
 
-.page-title h2 {
-  font-size: 16px;
-  letter-spacing: 3px;
-  background-color: #222;
-  color: #fff;
-  display: inline-block;
-  padding: 12px 25px;
-  text-transform: uppercase;
-  font-weight: normal;
+/* ★ 필터 메뉴 (탭 스타일) */
+.filter-menu {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 60px;
 }
 
-/* 그리드 레이아웃 (상품 진열대) */
+.filter-menu button {
+  background: none;
+  border: none;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  color: #aaa;
+  cursor: pointer;
+  padding-bottom: 5px;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+
+.filter-menu button:hover {
+  color: #666;
+}
+
+/* 선택된 탭 스타일 */
+.filter-menu button.active {
+  color: #000;
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+/* 그리드 및 카드 스타일 */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개 */
-  gap: 50px; /* 카드 사이 간격 */
-  padding: 0 50px 100px 50px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  padding: 0 50px 100px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* 개별 카드 디자인 */
 .card {
   text-align: center;
   cursor: pointer;
   transition: opacity 0.3s;
 }
+.card:hover { opacity: 0.7; }
 
-.card:hover {
-  opacity: 0.7;
-}
-
-/* 이미지 영역 (회색 박스) */
 .card-image {
   width: 100%;
-  aspect-ratio: 1 / 1; /* 정사각형 */
+  aspect-ratio: 1 / 1;
   background-color: #f4f4f4;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 25px;
-}
-
-.card-image span {
+  margin-bottom: 20px;
   font-size: 24px;
   color: #ccc;
-  font-weight: bold;
+  position: relative; /* 오버레이를 위해 필요 */
+}
+
+/* 해결됨 오버레이 */
+.solved-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
   letter-spacing: 2px;
 }
 
-/* 텍스트 영역 */
 .tag {
-  display: inline-block;
-  font-size: 10px;
-  padding: 3px 0;
-  border-bottom: 1px solid #333;
+  font-size: 11px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 2px;
   margin-bottom: 10px;
+  display: inline-block;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-.tag.lost { color: #d32f2f; border-color: #d32f2f; } /* 분실: 빨강 */
-.tag.found { color: #388e3c; border-color: #388e3c; } /* 습득: 초록 */
+.tag.lost { color: #d32f2f; border-color: #d32f2f; }
+.tag.found { color: #388e3c; border-color: #388e3c; }
 
 .card-title {
   font-size: 15px;
@@ -115,25 +145,14 @@ body {
   font-weight: normal;
 }
 
-.card-info {
-  font-size: 13px;
-  color: #888;
-  margin-top: 5px;
-  font-family: sans-serif; /* 정보는 깔끔한 고딕체 */
+.done-text {
+  text-decoration: line-through;
+  color: #aaa;
 }
 
-/* 반응형: 모바일에서는 한 줄에 1개 */
-@media (max-width: 768px) {
-  .grid-container {
-    grid-template-columns: 1fr;
-    padding: 0 20px;
-  }
-  .navbar {
-    flex-direction: column;
-    gap: 20px;
-    padding: 30px 20px;
-  }
-  .nav-links a {
-    margin: 0 10px;
-  }
+.card-info {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+  font-family: sans-serif;
 }

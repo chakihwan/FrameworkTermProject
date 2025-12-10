@@ -38,4 +38,6 @@ public class LostItem {
     // 추가: 카카오톡 오픈채팅 링크 저장할 칸
     @Column(nullable = true)
     private String kakaoLink;
+
+    private boolean isPhoneOpen;  //전화번호 공개 여부 (true면 공개)
 }

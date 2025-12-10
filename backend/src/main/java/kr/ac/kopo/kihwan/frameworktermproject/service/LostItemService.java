@@ -35,10 +35,9 @@ public class LostItemService {
         item.setItemType(dto.getItemType());
 
         item.setStatus(ItemStatus.ING);
-        item.setKakaoLink(dto.getKakaoLink());
         item.setWriter(writer); // 작성자 연결 (JPA 연관관계)
-        // imagePath는 나중에 처리
-
+        item.setKakaoLink(dto.getKakaoLink());
+        item.setPhoneOpen(dto.isPhoneOpen());
 
 
         return lostItemRepository.save(item);

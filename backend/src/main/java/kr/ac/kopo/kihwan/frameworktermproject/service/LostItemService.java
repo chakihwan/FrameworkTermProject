@@ -86,7 +86,7 @@ public class LostItemService {
         //  파일 저장 로직 추가
         if (file != null && !file.isEmpty()) {
             // 저장할 경로
-            String uploadDir = "D:/lost_found_images/";
+            String uploadDir = "D:/FrameworkTermProject/lost_found_images/";
 
             // 파일명 중복 방지를 위해 UUID 붙이기 (예: a1b2-c3d4_지갑.jpg)
             String originalFilename = file.getOriginalFilename();

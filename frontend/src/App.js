@@ -28,7 +28,7 @@ function App() {
                     <Link to="/">Home</Link>
                     <Link to="/write">분실물등록</Link>
 
-                    {/* ★ 핵심 변경: 로그인 여부에 따라 메뉴가 다르게 보임 */}
+                    {/* 로그인 여부에 따라 메뉴가 다르게 보임 */}
                     {user ? (
                         <>
                             {/* 로그인 했을 때 */}
@@ -130,7 +130,18 @@ function Home() {
                 {filteredItems.map(item => (
                     <div key={item.id} className="card" onClick={() => navigate(`/items/${item.id}`)}>
                         <div className="card-image">
-                            <span>{item.title.substring(0, 1)}</span>
+                            {item.imagePath ? (
+                                // 사진이 있으면 사진 보여주기
+                                <img
+                                    src={`http://localhost:8081/images/${item.imagePath}`}
+                                    alt="item"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            ) : (
+                                // 사진 없으면 기존처럼 이니셜 보여주기
+                                <span>{item.title.substring(0, 1)}</span>
+                            )}
+
                             {item.status === 'DONE' && <div className="solved-overlay">SOLVED</div>}
                         </div>
                         <div>

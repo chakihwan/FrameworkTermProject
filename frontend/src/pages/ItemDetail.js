@@ -91,150 +91,157 @@ const ItemDetail = () => {
             <button onClick={() => navigate(-1)} style={{ marginBottom: '20px', background: 'none', border: 'none', cursor: 'pointer', color:'#888' }}>← BACK TO LIST</button>
 
             {/* 상세 카드 영역 */}
-            <div style={{ border: '1px solid #eee', padding: '40px', borderRadius:'15px', boxShadow:'0 10px 30px rgba(0,0,0,0.05)', position:'relative', overflow:'hidden' }}>
+            <div style={{ border: '1px solid #eee', padding: '40px', borderRadius:'15px', boxShadow:'0 10px 30px rgba(0,0,0,0.05)', position:'relative', overflow:'hidden', backgroundColor:'#fff' }}>
 
-                {/* ★ 해결됨 상태일 때 배경에 'SOLVED' 도장 찍기 (시각적 효과) */}
+                {/* SOLVED 도장 (우측 상단 고정) */}
                 {item.status === 'DONE' && (
                     <div style={{
-                        position: 'absolute', top: '20px', right: '20px',
-                        border: '2px solid #ccc', color: '#ccc',
-                        fontSize: '20px', fontWeight: 'bold', padding: '5px 15px',
-                        transform: 'rotate(-15deg)', zIndex: 0, pointerEvents: 'none'
+                        position: 'absolute', top: '25px', right: '25px',
+                        border: '3px solid #ccc', color: '#ccc',
+                        fontSize: '24px', fontWeight: 'bold', padding: '5px 20px',
+                        transform: 'rotate(-15deg)', zIndex: 10, pointerEvents: 'none',
+                        opacity: 0.8
                     }}>
                         SOLVED
                     </div>
                 )}
 
-                {/* 이미지 영역 */}
-                <div style={{ width: '100%', marginBottom: '30px', textAlign: 'center', backgroundColor: '#f8f8f8', borderRadius:'8px', padding:'20px' }}>
+                {/* 1. 헤더 영역 (태그, 제목, 작성자 정보) -> 가장 위로 이동! */}
+                <div style={{ marginBottom: '30px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+            <span className={`tag ${item.itemType==='LOST'?'lost':'found'}`} style={{ fontSize: '12px', padding: '4px 8px' }}>
+              {item.itemType}
+            </span>
+
+                        {/* 상태 배지 */}
+                        <span style={{
+                            padding: '4px 8px', fontSize: '12px', borderRadius: '4px',
+                            backgroundColor: item.status === 'DONE' ? '#555' : '#2ecc71',
+                            color: 'white', fontWeight: 'bold'
+                        }}>
+              {item.status === 'DONE' ? '해결 완료' : '찾는 중'}
+            </span>
+                    </div>
+
+                    <h1 style={{
+                        fontSize: '32px', margin: '0 0 15px 0',
+                        color: item.status==='DONE'?'#aaa':'#111',
+                        textDecoration: item.status==='DONE'?'line-through':'none'
+                    }}>
+                        {item.title}
+                    </h1>
+
+                    <div style={{ color: '#888', fontSize: '13px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
+                        Posted by <strong>{item.writer?.name}</strong> · {new Date(item.regDate).toLocaleDateString()} · {new Date(item.regDate).toLocaleTimeString()}
+                    </div>
+                </div>
+
+                {/* 2. 이미지 영역 -> 제목 아래로 이동 */}
+                <div style={{ width: '100%', marginBottom: '40px', textAlign: 'center', backgroundColor: '#fafafa', borderRadius:'8px', overflow:'hidden' }}>
                     {item.imagePath ? (
                         <img
                             src={`http://localhost:8081/images/${item.imagePath}`}
                             alt="item"
-                            style={{ maxWidth:'100%', maxHeight:'500px', filter: item.status==='DONE' ? 'grayscale(100%)' : 'none', transition: 'filter 0.3s' }}
+                            style={{
+                                maxWidth:'100%', maxHeight:'600px',
+                                filter: item.status==='DONE' ? 'grayscale(100%)' : 'none',
+                                transition: 'filter 0.3s', display: 'block', margin: '0 auto'
+                            }}
                         />
                     ) : (
-                        <div style={{color:'#ccc', padding:'50px'}}>NO IMAGE</div>
+                        <div style={{color:'#ccc', padding:'60px 0', fontSize:'14px'}}>NO IMAGE</div>
                     )}
                 </div>
 
-                {/* 태그 및 제목 */}
-                <div style={{position:'relative', zIndex:1}}>
-                    <span className={`tag ${item.itemType==='LOST'?'lost':'found'}`}>{item.itemType}</span>
-
-                    {/* 상태 배지 (현재 상태를 명확히 보여줌) */}
-                    <span style={{
-                        marginLeft: '10px',
-                        padding: '2px 8px',
-                        fontSize: '12px',
-                        borderRadius: '4px',
-                        backgroundColor: item.status === 'DONE' ? '#555' : '#2ecc71',
-                        color: 'white'
-                    }}>
-            {item.status === 'DONE' ? '해결 완료' : '찾는 중'}
-          </span>
-
-                    <h2 style={{ fontSize: '28px', margin: '15px 0', color: item.status==='DONE'?'#aaa':'#000', textDecoration: item.status==='DONE'?'line-through':'none' }}>
-                        {item.title}
-                    </h2>
-
-                    <div style={{borderBottom:'1px solid #eee', paddingBottom:'20px', marginBottom:'20px', color:'#888', fontSize:'14px'}}>
-                        Posted by <strong>{item.writer?.name}</strong> · {new Date(item.regDate).toLocaleDateString()}
-                    </div>
-
-                    <div style={{minHeight:'100px', whiteSpace:'pre-wrap', lineHeight:'1.6', color: item.status==='DONE'?'#888':'#333'}}>
-                        {item.content}
-                    </div>
+                {/* 3. 본문 내용 */}
+                <div style={{ minHeight: '100px', whiteSpace: 'pre-wrap', lineHeight: '1.8', fontSize: '16px', color: item.status==='DONE'?'#888':'#333', marginBottom: '40px' }}>
+                    {item.content}
                 </div>
 
-                {/* ★ 작성자 전용 컨트롤 패널 (디자인 개선) */}
+                {/* --- 아래는 기존 버튼들 (작성자 메뉴, 카톡 문의) --- */}
+
+                {/* 작성자 전용 컨트롤 패널 */}
                 {isWriter && (
-                    <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#f1f1f1', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#555' }}>⚙️ 작성자 메뉴</span>
+                    <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#555' }}>⚙️ 관리 메뉴</span>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                            {/* 상태 변경 버튼 (토글 스타일) */}
                             <button
                                 onClick={toggleStatus}
                                 style={{
-                                    padding: '10px 20px',
-                                    cursor: 'pointer',
+                                    padding: '8px 16px', cursor: 'pointer',
                                     border: item.status === 'ING' ? 'none' : '1px solid #555',
                                     backgroundColor: item.status === 'ING' ? '#555' : 'white',
                                     color: item.status === 'ING' ? 'white' : '#555',
-                                    borderRadius: '5px',
-                                    fontWeight: 'bold',
-                                    transition: 'all 0.3s'
+                                    borderRadius: '4px', fontWeight: 'bold'
                                 }}>
                                 {item.status === 'ING' ? '✅ 해결 완료로 변경' : '🔄 다시 찾는 중으로'}
                             </button>
-
-                            {/* 삭제 버튼 */}
                             <button
                                 onClick={handleDelete}
-                                style={{ padding: '10px 20px', cursor: 'pointer', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '5px', fontWeight: 'bold' }}>
+                                style={{ padding: '8px 16px', cursor: 'pointer', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
                                 🗑 삭제
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* 카톡 문의 버튼 (해결 안 됐을 때만 보임) */}
+                {/* 카톡 문의 버튼 */}
                 {!isWriter && item.status !== 'DONE' && (
                     <div style={{ textAlign: 'center', marginTop: '30px' }}>
                         {item.kakaoLink ? (
-                            <a href={item.kakaoLink} target="_blank" rel="noreferrer" style={{ display: 'inline-block', padding: '15px 30px', backgroundColor: '#FAE100', color: '#3B1E1E', textDecoration: 'none', fontWeight: 'bold', borderRadius: '30px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
-                                💬 1:1 카카오톡 문의하기
+                            <a href={item.kakaoLink} target="_blank" rel="noreferrer" style={{ display: 'inline-block', padding: '15px 40px', backgroundColor: '#FAE100', color: '#3B1E1E', textDecoration: 'none', fontWeight: 'bold', borderRadius: '50px', fontSize:'16px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
+                                💬 카카오톡으로 연락하기
                             </a>
                         ) : (
-                            <div style={{ padding:'15px', background:'#f9f9f9', borderRadius:'8px', color:'#666' }}>
-                                연락처: {currentUser ? item.writer?.phoneNumber : '로그인 후 확인 가능'}
+                            <div style={{ padding:'15px', background:'#f1f1f1', borderRadius:'8px', color:'#666', display:'inline-block' }}>
+                                연락처: {currentUser ? item.writer?.phoneNumber : '🔒 로그인 후 확인 가능'}
                             </div>
                         )}
                     </div>
                 )}
             </div>
 
-            {/* 댓글 영역 */}
-            <div style={{ marginTop: '50px' }}>
-                <h3 style={{borderBottom:'2px solid #000', paddingBottom:'10px', display:'inline-block'}}>COMMENTS ({comments.length})</h3>
+            {/* 댓글 영역 (기존과 동일) */}
+            <div style={{ marginTop: '60px' }}>
+                <h3 style={{borderBottom:'2px solid #333', paddingBottom:'10px', display:'inline-block', margin:'0 0 20px 0'}}>COMMENTS ({comments.length})</h3>
 
                 {/* 댓글 입력창 */}
-                <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: '10px', margin: '20px 0', alignItems: 'flex-start' }}>
+                <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: '15px', marginBottom: '30px', alignItems: 'flex-start', background:'#fff', padding:'20px', border:'1px solid #eee', borderRadius:'8px' }}>
           <textarea
-              placeholder={currentUser ? "댓글을 남겨주세요." : "로그인 후 댓글을 남길 수 있습니다."}
+              placeholder={currentUser ? "댓글을 입력하세요. (습득 장소, 연락처 등)" : "로그인 후 댓글을 남길 수 있습니다."}
               value={commentContent}
               onChange={(e) => setCommentContent(e.target.value)}
               disabled={!currentUser}
-              style={{ flex: 1, padding: '15px', height: '60px', borderRadius:'8px', border:'1px solid #ddd', resize:'none', fontFamily:'inherit' }}
+              style={{ flex: 1, padding: '10px', height: '50px', borderRadius:'4px', border:'1px solid #ddd', resize:'none', fontFamily:'inherit', fontSize:'14px' }}
           />
-                    <div style={{ textAlign: 'center' }}>
-                        <label style={{ fontSize: '12px', cursor: 'pointer', display:'block', marginBottom:'5px' }}>
+                    <div style={{ textAlign: 'center', width:'80px' }}>
+                        <label style={{ fontSize: '12px', cursor: 'pointer', display:'block', marginBottom:'8px', userSelect:'none' }}>
                             <input type="checkbox" checked={isSecret} onChange={(e) => setIsSecret(e.target.checked)} /> 비밀글
                         </label>
-                        <button type="submit" disabled={!currentUser} style={{ padding: '10px 20px', background: '#000', color: 'white', border: 'none', borderRadius:'5px', cursor: 'pointer', opacity: currentUser ? 1 : 0.5 }}>
+                        <button type="submit" disabled={!currentUser} style={{ width:'100%', padding: '10px 0', background: '#333', color: 'white', border: 'none', borderRadius:'4px', cursor: 'pointer', opacity: currentUser ? 1 : 0.5, fontWeight:'bold' }}>
                             등록
                         </button>
                     </div>
                 </form>
 
                 {/* 댓글 목록 */}
-                <div style={{ display:'flex', flexDirection:'column', gap:'15px' }}>
+                <div style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
                     {comments.map((comment) => {
                         const isSecretComment = comment.secret || comment.isSecret;
                         const canSee = currentUser && (currentUser.username === comment.writer?.username || currentUser.username === item.writer?.username);
 
                         return (
-                            <div key={comment.id} style={{ padding: '15px', background: '#f8f8f8', borderRadius: '8px' }}>
-                                <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'5px' }}>
-                  <span style={{ fontWeight: 'bold', fontSize:'13px' }}>
+                            <div key={comment.id} style={{ padding: '15px 20px', background: '#fff', border:'1px solid #eee', borderRadius: '8px' }}>
+                                <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'8px' }}>
+                  <span style={{ fontWeight: 'bold', fontSize:'14px', color:'#333' }}>
                     {comment.writer?.name}
-                      {isSecretComment && <span style={{fontSize:'12px', marginLeft:'5px'}}>🔒</span>}
+                      {isSecretComment && <span style={{fontSize:'12px', marginLeft:'6px'}} title="비밀글">🔒</span>}
                   </span>
-                                    <span style={{ fontSize: '11px', color: '#999' }}>{new Date(comment.regDate).toLocaleDateString()}</span>
+                                    <span style={{ fontSize: '12px', color: '#aaa' }}>{new Date(comment.regDate).toLocaleString()}</span>
                                 </div>
-                                <div style={{ fontSize: '14px', color: '#444', lineHeight:'1.5' }}>
+                                <div style={{ fontSize: '14px', color: '#555', lineHeight:'1.5' }}>
                                     {isSecretComment && !canSee ? (
-                                        <span style={{ color: '#aaa' }}>🔒 비밀 댓글입니다.</span>
+                                        <span style={{ color: '#bbb' }}>🔒 비밀 댓글입니다.</span>
                                     ) : (
                                         comment.content
                                     )}

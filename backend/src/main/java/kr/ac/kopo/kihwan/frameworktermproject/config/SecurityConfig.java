@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 3. 주소별 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입, 로그인, 글쓰기(POST), 목록조회(GET), 이미지조회 등 모두 허용
-                        .requestMatchers("/api/members/**", "/api/items/**", "/images/**").permitAll()
+                        // 회원가입, 로그인, 글쓰기(POST), 목록조회(GET), 이미지조회 등 모두 허용 + 댓글 조회와 쓰기 허용
+                        .requestMatchers("/api/members/**", "/api/items/**", "/images/**", "/api/comments/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/items").permitAll() // 글쓰기 POST 명시적 허용
                         .anyRequest().authenticated()
                 );

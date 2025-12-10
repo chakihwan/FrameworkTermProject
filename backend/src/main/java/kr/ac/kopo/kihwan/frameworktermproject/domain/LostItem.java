@@ -34,4 +34,8 @@ public class LostItem {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member writer;
+
+    // 추가: 카카오톡 오픈채팅 링크 저장할 칸
+    @Column(nullable = true)
+    private String kakaoLink;
 }

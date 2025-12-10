@@ -28,7 +28,9 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(response.data));
 
             alert('로그인 성공!');
-            navigate('/'); // 메인 화면으로 이동
+
+            // [수정 후]
+            window.location.replace('/'); // 페이지를 새로고침하며 메인으로 이동 (App.js가 다시 실행됨)
 
         } catch (error) {
             console.error("로그인 에러:", error);

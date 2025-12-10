@@ -29,7 +29,7 @@ const ItemDetail = () => {
         }
     };
 
-    // 2. 댓글 등록
+// 2. 댓글 등록 함수 수정
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         if (!currentUser) {
@@ -44,8 +44,11 @@ const ItemDetail = () => {
                 itemId: id,
                 content: commentContent,
                 username: currentUser.username,
-                isSecret: isSecret
+
+                // ★ [핵심 수정] isSecret 대신 secret 이라고 보내야 백엔드가 알아듣습니다!
+                secret: isSecret
             });
+
             alert('댓글이 등록되었습니다.');
             setCommentContent('');
             setIsSecret(false);
@@ -124,26 +127,40 @@ const ItemDetail = () => {
                     </div>
                 </form>
 
-                {/* 댓글 목록 */}
+                {/* 댓글 목록 영역 수정 */}
                 <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '10px' }}>
                     {comments.map((comment) => {
-                        // ★ 비밀글 로직: 비밀글이면서 && (내가 쓴 게 아니고 && 글 작성자도 아니면) -> "비밀 댓글입니다"
-                        const isSecretComment = comment.secret;
-                        const canSee = currentUser && (currentUser.username === comment.writer?.username || currentUser.username === item.writer?.username);
+
+                        // ★ [수정 포인트 1] 변수명 방어 코딩 ('secret' 또는 'isSecret' 둘 다 확인)
+                        const isSecretComment = comment.secret || comment.isSecret;
+
+                        // ★ [디버깅용] F12 콘솔에서 확인해보세요 (나중에 지우셔도 됩니다)
+                        console.log("댓글 데이터:", comment, "비밀여부:", isSecretComment);
+
+                        // 볼 수 있는 사람: 로그인한 유저가 있고 && (댓글 쓴 사람이거나 OR 글 쓴 사람이거나)
+                        const canSee = currentUser && (
+                            currentUser.username === comment.writer?.username ||
+                            currentUser.username === item.writer?.username
+                        );
 
                         return (
                             <div key={comment.id} style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
                                 <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '5px' }}>
                                     {comment.writer?.name}
+                                    {/* 비밀글이면 자물쇠 아이콘 표시 */}
                                     {isSecretComment && <span style={{color:'red', marginLeft:'5px'}}>🔒</span>}
+
                                     <span style={{ fontWeight: 'normal', color: '#aaa', marginLeft: '10px' }}>
                     {new Date(comment.regDate).toLocaleDateString()}
                   </span>
                                 </div>
 
                                 <div style={{ fontSize: '14px', color: '#555' }}>
+                                    {/* ★ [수정 포인트 2] 비밀글 로직 적용 */}
                                     {isSecretComment && !canSee ? (
-                                        <span style={{ color: '#aaa', fontStyle: 'italic' }}>🔒 비밀 댓글입니다. (작성자와 글쓴이만 볼 수 있습니다)</span>
+                                        <span style={{ color: '#aaa', fontStyle: 'italic' }}>
+                      🔒 비밀 댓글입니다. (작성자와 글쓴이만 볼 수 있습니다)
+                    </span>
                                     ) : (
                                         comment.content
                                     )}

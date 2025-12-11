@@ -230,3 +230,83 @@ body {
   right: -30px;
   top: 5px;
 }
+
+/* --- 메인 컨테이너 (중앙 정렬 & 최대 너비) --- */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  margin-bottom: 80px;
+}
+
+/* --- 히어로 섹션 (오렌지 배너) --- */
+.hero-section {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  padding: 100px 20px;
+  text-align: center;
+  margin-bottom: 50px;
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 10px 30px rgba(230, 81, 0, 0.1);
+}
+
+.hero-title {
+  font-size: 42px;
+  margin-bottom: 15px;
+  color: #e65100;
+  font-weight: 900;
+  letter-spacing: 1px;
+  font-family: sans-serif;
+}
+
+.hero-subtitle {
+  color: #f57c00;
+  font-size: 18px;
+  font-weight: 500;
+  font-family: sans-serif
+}
+
+/* --- 공통 태그 디자인 (알약 모양) --- */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px; /* 카드용 높이 */
+  padding: 0 10px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: 800;
+  box-sizing: border-box;
+}
+
+/* 타입별 색상 분리 */
+.tag-badge.lost {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.tag-badge.found {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+/* 상태별 색상 분리 (SOLVED 오버레이 등) */
+.card-solved-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  border-radius: 5px;
+}
+
+/* 카드 텍스트 */
+.card-info-text {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}

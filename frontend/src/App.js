@@ -72,16 +72,16 @@ function App() {
     );
 }
 
-// 메인 화면
+// 메인 화면 (Home 컴포넌트)
 function Home() {
     const [items, setItems] = useState([]);
     const [filter, setFilter] = useState('ALL');
     const [keyword, setKeyword] = useState('');
     const navigate = useNavigate();
 
-    // ★ 페이지네이션 상태 추가
+    // 페이지네이션
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12; // 한 페이지에 12개씩 (4열 x 3행)
+    const itemsPerPage = 12;
 
     useEffect(() => {
         fetchItems();
@@ -93,55 +93,39 @@ function Home() {
                 params: { keyword: searchKeyword }
             });
             setItems(res.data);
-            setCurrentPage(1); // 검색하면 1페이지로 초기화
-        } catch (err) {
-            console.log(err);
-        }
+            setCurrentPage(1);
+        } catch (err) { console.log(err); }
     };
 
-    const handleSearch = (e) => {
-        if (e.key === 'Enter') fetchItems(keyword);
-    };
-
+    const handleSearch = (e) => { if (e.key === 'Enter') fetchItems(keyword); };
     const onSearchClick = () => fetchItems(keyword);
 
-    // 1. 필터링 먼저 적용
+    // 필터링 & 페이지네이션 로직
     const filteredItems = items.filter(item => {
         if (filter === 'ALL') return true;
         return item.itemType === filter;
     });
 
-    // 2. 페이지네이션 계산 (필터링된 결과 내에서 자르기)
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-
-    // 전체 페이지 수 계산
     const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-
-    // 페이지 변경 함수
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-        window.scrollTo(0, 0); // 페이지 넘기면 맨 위로 스크롤
-    };
+    const handlePageChange = (n) => { setCurrentPage(n); window.scrollTo(0, 0); };
 
     return (
-        <div>
-            {/* Hero Section (배너) */}
-            <div style={{
-                background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)',
-                padding: '80px 20px', textAlign: 'center', marginBottom: '50px',
-                borderRadius: '0 0 30px 30px', boxShadow: '0 10px 30px rgba(230, 81, 0, 0.1)'
-            }}>
-                <h1 style={{ fontSize: '42px', marginBottom: '15px', color:'#e65100', fontWeight:'900', letterSpacing:'1px', fontFamily:'sans-serif' }}>LOST & FOUND</h1>
-                <p style={{ color: '#f57c00', fontSize: '18px', fontWeight:'500' }}>캠퍼스의 모든 분실물, 여기서 쉽고 빠르게 찾아보세요.</p>
+        // 1. 메인 컨테이너 클래스 적용
+        <div className="main-container">
+
+            {/* 2. Hero Section 클래스 적용 */}
+            <div className="hero-section">
+                <h1 className="hero-title">내 에어팟... 혹시 여기?</h1>
+                <p className="hero-subtitle">캠퍼스의 모든 분실물, 여기서 쉽고 빠르게 찾아보세요.</p>
             </div>
 
-            {/* 검색창 */}
+            {/* 검색창 (기존 클래스 활용) */}
             <div className="search-container">
-                <input
-                    type="text" className="search-input" placeholder="SEARCH (제목, 내용)"
-                    value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={handleSearch}
+                <input type="text" className="search-input" placeholder="SEARCH (제목, 내용)"
+                       value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={handleSearch}
                 />
                 <button className="search-btn" onClick={onSearchClick}>🔍</button>
             </div>
@@ -153,7 +137,7 @@ function Home() {
                 <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => {setFilter('FOUND'); setCurrentPage(1);}}>제가 찾았습니다🔍</button>
             </div>
 
-            {/* 아이템 그리드 (4개씩 표시) */}
+            {/* 아이템 그리드 */}
             <div className="grid-container">
                 {currentItems.length === 0 && (
                     <p style={{ textAlign: 'center', width: '100%', color: '#999', marginTop: '50px', gridColumn: '1 / -1' }}>
@@ -169,40 +153,35 @@ function Home() {
                             ) : (
                                 <span>{item.title.substring(0, 1)}</span>
                             )}
-                            {item.status === 'DONE' && <div className="solved-overlay">SOLVED</div>}
+                            {/* SOLVED 오버레이 클래스 적용 */}
+                            {item.status === 'DONE' && <div className="card-solved-overlay">SOLVED</div>}
                         </div>
-                        <div><span className={`tag ${item.itemType === 'LOST' ? 'lost' : 'found'}`}>{item.itemType}</span></div>
+
+                        {/* 3. 태그 디자인 클래스 적용 (JS로 조건부 클래스 부여) */}
+                        <div className="card-info-text">
+                             <span className={`tag-badge ${item.itemType === 'LOST' ? 'lost' : 'found'}`}>
+                                {item.itemType}
+                            </span>
+                        </div>
+
                         <h3 className={`card-title ${item.status === 'DONE' ? 'done-text' : ''}`}>{item.title}</h3>
-                        <p className="card-info">{new Date(item.regDate).toLocaleDateString()}</p>
+                        <p className="card-info">
+                            {item.writer?.name} · {new Date(item.regDate).toLocaleDateString()}
+                        </p>
                     </div>
                 ))}
             </div>
 
-            {/* ★ 페이지네이션 버튼들 */}
+            {/* 페이지네이션 */}
             {totalPages > 0 && (
                 <div className="pagination">
-                    {/* 이전 버튼 (필요하면 주석 해제)
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&lt;</button>
-                    */}
-
                     {Array.from({ length: totalPages }, (_, i) => (
-                        <button
-                            key={i + 1}
-                            onClick={() => handlePageChange(i + 1)}
-                            className={currentPage === i + 1 ? 'active' : ''}
-                        >
+                        <button key={i + 1} onClick={() => handlePageChange(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
                             {i + 1}
                         </button>
                     ))}
-
-                    {/* 다음 버튼 (필요하면 주석 해제)
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>&gt;</button>
-                    */}
                 </div>
             )}
-
-            {/* 하단 여백 추가 */}
-            <div style={{ marginBottom: '80px' }}></div>
         </div>
     );
 }

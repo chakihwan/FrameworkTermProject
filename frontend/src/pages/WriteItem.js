@@ -46,7 +46,7 @@ const WriteItem = () => {
 
     return (
         <div style={{ padding: '50px', maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center', letterSpacing: '2px', marginBottom:'30px' }}>REGISTER ITEM</h2>
+            <h2 style={{ textAlign: 'center', letterSpacing: '2px', marginBottom:'30px' }}>분실물 등록하기</h2>
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
@@ -98,7 +98,7 @@ const WriteItem = () => {
                     <input type="file" onChange={(e) => setFile(e.target.files[0])} accept="image/*" style={{marginTop:'10px'}} />
                 </div>
 
-                <button type="submit" style={{ padding: '15px', background: 'black', color: 'white', border: 'none', cursor: 'pointer', fontWeight:'bold' }}>REGISTER</button>
+                <button type="submit" style={{ padding: '15px', background: 'black', color: 'white', border: 'none', cursor: 'pointer', fontWeight:'bold' }}>등록하기</button>
             </form>
         </div>
     );

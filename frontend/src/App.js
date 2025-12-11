@@ -7,6 +7,8 @@ import WriteItem from './pages/WriteItem';
 import ItemDetail from './pages/ItemDetail';
 import './App.css';
 
+import logoImg from './lost_found_logo.png';
+
 function App() {
     // 로그인 상태 관리 (Navbar 갱신을 위해 App 레벨에서 관리하거나, localStorage를 직접 읽음)
     // 여기서는 간단하게 localStorage를 읽어서 렌더링하도록 처리
@@ -23,7 +25,15 @@ function App() {
         <BrowserRouter>
             {/* 상단 네비게이션바 */}
             <nav className="navbar">
-                <Link to="/" className="logo">CAMPUS LOST & FOUND</Link>
+                {/* 로고 이미지 + 텍스트를 가로로 배치 (flex) */}
+                <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '15px', textDecoration: 'none', color: '#000' }}>
+                    <img
+                        src={logoImg}
+                        alt="Logo"
+                        style={{ height: '70px', width: 'auto' }} // 로고 크기 조절
+                    />
+                    <span>CAMPUS LOST & FOUND</span>
+                </Link>
                 <div className="nav-links">
                     <Link to="/">Home</Link>
                     <Link to="/write">분실물등록</Link>
@@ -52,6 +62,12 @@ function App() {
                 <Route path="/write" element={<WriteItem />} />
                 <Route path="/items/:id" element={<ItemDetail />} />
             </Routes>
+
+            {/* ★ Footer 추가 */}
+            <footer style={{ marginTop: '100px', padding: '40px', borderTop: '1px solid #eee', textAlign: 'center', color: '#999', fontSize: '12px' }}>
+                <p>© 2025 CAMPUS LOST & FOUND. All rights reserved.</p>
+                <p>Created by <strong>차기환</strong> (Dept. of AISoftware)</p>
+            </footer>
         </BrowserRouter>
     );
 }
@@ -100,6 +116,21 @@ function Home() {
 
     return (
         <div>
+            {/* ★ Hero Section (배너) 추가 */}
+            <div style={{
+                background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)', // 연한 살구색 그라데이션
+                padding: '100px 20px',
+                textAlign: 'center',
+                marginBottom: '50px',
+                borderBottom:'1px solid #ffe5d1'
+            }}>
+                <h1 style={{ fontSize: '42px', marginBottom: '15px', color:'#e65100', fontWeight:'900', letterSpacing:'1px', fontFamily:'sans-serif' }}>
+                    내 에어팟... 혹시 여기?
+                </h1>
+                <p style={{ color: '#f57c00', fontSize: '18px', fontWeight:'500', fontFamily:'sans-serif' }}>
+                    캠퍼스 내 분실물과 습득물을 쉽고 빠르게 찾아보세요.
+                </p>
+            </div>
             {/* ★ 검색창 영역 추가 */}
             <div className="search-container">
                 <input

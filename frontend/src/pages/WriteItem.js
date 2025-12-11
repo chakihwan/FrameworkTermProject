@@ -10,9 +10,12 @@ const WriteItem = () => {
     const [kakaoLink, setKakaoLink] = useState('');
     const [isPhoneOpen, setIsPhoneOpen] = useState(false);
     const [file, setFile] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); // ★ 로딩 상태 추가
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return; // ★ 중복 클릭 방지
+
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!user) {
@@ -32,13 +35,16 @@ const WriteItem = () => {
             formData.append('file', file);
         }
 
+        setIsSubmitting(true); // ★ 로딩 시작
+
         try {
             await axios.post('http://localhost:8081/api/items', formData);
             alert('등록이 완료되었습니다!');
             navigate('/');
         } catch (error) {
             console.error(error);
-            alert('등록에 실패했습니다. 다시 시도해주세요.');
+            alert('등록 실패');
+            setIsSubmitting(false); // ★ 실패하면 다시 누를 수 있게 풀어줌
         }
     };
 
@@ -124,8 +130,16 @@ const WriteItem = () => {
                     </div>
 
                     {/* 등록 버튼 */}
-                    <button type="submit" style={{ padding: '18px', background: 'linear-gradient(to right, #333, #555)', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold', borderRadius: '10px', fontSize: '16px', marginTop: '20px', transition:'transform 0.2s' }} onMouseDown={(e)=>e.currentTarget.style.transform='scale(0.98)'} onMouseUp={(e)=>e.currentTarget.style.transform='scale(1)'}>
-                        등록하기
+                    <button
+                        type="submit"
+                        disabled={isSubmitting} // ★ 로딩 중이면 클릭 불가
+                        style={{
+                            /* ... 기존 스타일 ... */
+                            opacity: isSubmitting ? 0.7 : 1, // 연하게 처리
+                            cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                        }}
+                    >
+                        {isSubmitting ? '⏳ 업로드 중...' : '등록하기'}
                     </button>
                 </form>
             </div>

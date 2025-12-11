@@ -53,4 +53,21 @@ public class MemberService {
         }
         return null; // 실패
     }
+
+    // ★ [추가] 아이디 찾기 기능
+    public String findId(String name, String phoneNumber) {
+        Member member = memberRepository.findByNameAndPhoneNumber(name, phoneNumber)
+                .orElseThrow(() -> new RuntimeException("일치하는 회원 정보가 없습니다."));
+        return member.getUsername();
+    }
+
+    // ★ [추가] 비밀번호 재설정 기능
+    @Transactional
+    public void resetPassword(String username, String name, String phoneNumber, String newPassword) {
+        Member member = memberRepository.findByUsernameAndNameAndPhoneNumber(username, name, phoneNumber)
+                .orElseThrow(() -> new RuntimeException("입력하신 정보가 회원 정보와 일치하지 않습니다."));
+
+        // 새 비밀번호 암호화 후 저장
+        member.setPassword(passwordEncoder.encode(newPassword));
+    }
 }

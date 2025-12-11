@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -16,6 +18,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
         try {
@@ -26,6 +29,7 @@ public class MemberController {
         }
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Member member = memberService.login(request);
@@ -33,6 +37,33 @@ public class MemberController {
             return ResponseEntity.ok(member);
         } else {
             return ResponseEntity.status(401).body("로그인 실패");
+        }
+    }
+
+    // ★ [추가] 아이디 찾기
+    @PostMapping("/find-id")
+    public ResponseEntity<String> findId(@RequestBody Map<String, String> request) {
+        try {
+            String username = memberService.findId(request.get("name"), request.get("phoneNumber"));
+            return ResponseEntity.ok(username);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("찾을 수 없음");
+        }
+    }
+
+    // ★ [추가] 비밀번호 재설정
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            memberService.resetPassword(
+                    request.get("username"),
+                    request.get("name"),
+                    request.get("phoneNumber"),
+                    request.get("newPassword")
+            );
+            return ResponseEntity.ok("변경 성공");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("정보 불일치");
         }
     }
 }

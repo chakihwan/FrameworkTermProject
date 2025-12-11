@@ -15,4 +15,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 중복 아이디 방지용
     boolean existsByUsername(String username);
+
+    // ★ [추가] 아이디 찾기용 (이름 + 전화번호로 검색)
+    Optional<Member> findByNameAndPhoneNumber(String name, String phoneNumber);
+
+    // ★ [추가] 비밀번호 재설정용 (아이디 + 이름 + 전화번호로 검색)
+    Optional<Member> findByUsernameAndNameAndPhoneNumber(String username, String name, String phoneNumber);
 }

@@ -310,7 +310,7 @@ body {
   margin-top: 30px;
 
   /* 오렌지 그라데이션 배경 */
-  background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+  background: linear-gradient(135deg, #ff9800 0%, #ff5600 100%);
   color: white;
 
   border: none;

@@ -128,7 +128,7 @@ function Home() {
                     내 에어팟... 혹시 여기?
                 </h1>
                 <p style={{ color: '#f57c00', fontSize: '18px', fontWeight:'500', fontFamily:'sans-serif' }}>
-                    캠퍼스 내 분실물과 습득물을 쉽고 빠르게 찾아보세요.
+                    캠퍼스 내 모든 분실물과 습득물을 쉽고 빠르게 찾아보세요.
                 </p>
             </div>
             {/* ★ 검색창 영역 추가 */}

@@ -86,11 +86,46 @@ body {
 /* 그리드 및 카드 스타일 */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  padding: 0 50px 100px;
-  max-width: 1200px;
-  margin: 0 auto;
+  /* repeat(4, 1fr) 가로 4칸으로 만듭니다 */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px 0;
+}
+/* (반응형: 화면이 좁아지면 자동으로 줄어들게 하려면 아래 코드 추가) */
+@media (max-width: 1024px) {
+  .grid-container { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .grid-container { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 2. 페이지네이션(번호 버튼) 디자인 추가 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background-color: #eee;
+}
+
+.pagination button.active {
+  background-color: #e65100; /* 오렌지색 테마에 맞춤 */
+  color: white;
+  border-color: #e65100;
 }
 
 .card {

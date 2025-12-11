@@ -1,8 +1,10 @@
 package kr.ac.kopo.kihwan.frameworktermproject.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class LostItemDto {
 
     private String title;

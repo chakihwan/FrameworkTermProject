@@ -25,20 +25,35 @@ public class LostItemService {
 
     // 글 쓰기
     @Transactional
-    public LostItem createItem(LostItemDto dto) {
+    public LostItem createItem(LostItemDto dto, MultipartFile file) throws IOException {
         Member writer = memberRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
 
         LostItem item = new LostItem();
         item.setTitle(dto.getTitle());
         item.setContent(dto.getContent());
         item.setItemType(dto.getItemType());
-
         item.setStatus(ItemStatus.ING);
-        item.setWriter(writer); // 작성자 연결 (JPA 연관관계)
+        item.setWriter(writer);
+
         item.setKakaoLink(dto.getKakaoLink());
         item.setPhoneOpen(dto.isPhoneOpen());
 
+        //  파일 저장 로직 추가
+        if (file != null && !file.isEmpty()) {
+            // 저장할 경로
+            String uploadDir = "D:/FrameworkTermProject/lost_found_images/";
+
+            // 파일명 중복 방지를 위해 UUID 붙이기 (예: a1b2-c3d4_지갑.jpg)
+            String originalFilename = file.getOriginalFilename();
+            String savedFilename = UUID.randomUUID() + "_" + originalFilename;
+
+            // 실제 파일 저장
+            file.transferTo(new File(uploadDir + savedFilename));
+
+            // DB에는 파일 이름만 저장
+            item.setImagePath(savedFilename);
+        }
 
         return lostItemRepository.save(item);
     }
@@ -73,34 +88,4 @@ public class LostItemService {
         return lostItemRepository.findByTitleContainingOrContentContainingOrderByRegDateDesc(keyword, keyword);
     }
 
-    @Transactional
-    public LostItem createItem(LostItemDto dto, MultipartFile file) throws IOException {
-        Member writer = memberRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("회원 없음"));
-
-        LostItem item = new LostItem();
-        item.setTitle(dto.getTitle());
-        item.setContent(dto.getContent());
-        item.setItemType(dto.getItemType());
-        item.setStatus(ItemStatus.ING);
-        item.setWriter(writer);
-
-        //  파일 저장 로직 추가
-        if (file != null && !file.isEmpty()) {
-            // 저장할 경로
-            String uploadDir = "D:/FrameworkTermProject/lost_found_images/";
-
-            // 파일명 중복 방지를 위해 UUID 붙이기 (예: a1b2-c3d4_지갑.jpg)
-            String originalFilename = file.getOriginalFilename();
-            String savedFilename = UUID.randomUUID() + "_" + originalFilename;
-
-            // 실제 파일 저장
-            file.transferTo(new File(uploadDir + savedFilename));
-
-            // DB에는 파일 이름만 저장
-            item.setImagePath(savedFilename);
-        }
-
-        return lostItemRepository.save(item);
-    }
 }

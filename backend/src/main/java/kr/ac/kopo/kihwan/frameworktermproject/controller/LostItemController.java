@@ -25,6 +25,12 @@ public class LostItemController {
             @ModelAttribute LostItemDto dto,           // 글자 데이터 (제목, 내용 등)
             @RequestParam(required = false) MultipartFile file // 파일 데이터 (필수 아님)
     ) throws IOException {
+        // ★★★ 인텔리제이 콘솔에 이 로그가 찍히는지 확인하세요! ★★★
+        System.out.println("=== [글쓰기 요청 데이터 확인] ===");
+        System.out.println("제목: " + dto.getTitle());
+        System.out.println("카톡링크: " + dto.getKakaoLink());
+        System.out.println("전화번호공개여부: " + dto.isPhoneOpen());
+        System.out.println("===============================");
         return lostItemService.createItem(dto, file);
     }
 

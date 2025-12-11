@@ -28,7 +28,7 @@ const WriteItem = () => {
         formData.append('itemType', itemType);
         formData.append('username', user.username);
         formData.append('kakaoLink', kakaoLink);
-        formData.append('isPhoneOpen', isPhoneOpen);    // ★ 백엔드로 전송
+        formData.append('phoneOpen', isPhoneOpen);    // ★ 백엔드로 전송
         if (file) {
             formData.append('file', file); // 파일이 있을 때만 추가
         }

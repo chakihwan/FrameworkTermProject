@@ -129,17 +129,14 @@ const WriteItem = () => {
                         {file && <p style={{marginTop:'15px', fontSize:'13px', color:'#2ecc71', fontWeight:'bold'}}>✅ {file.name}</p>}
                     </div>
 
-                    {/* 등록 버튼 */}
+                    {/* 등록 버튼 (스타일 교체됨) */}
                     <button
                         type="submit"
-                        disabled={isSubmitting} // ★ 로딩 중이면 클릭 불가
-                        style={{
-                            /* ... 기존 스타일 ... */
-                            opacity: isSubmitting ? 0.7 : 1, // 연하게 처리
-                            cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                        }}
+                        className="submit-btn"
+                        disabled={isSubmitting} // 로딩 상태
                     >
-                        {isSubmitting ? '⏳ 업로드 중...' : '등록하기'}
+                        {/* 로딩 상태가 있다면 텍스트 변경, 없다면 그냥 '등록 완료' */}
+                        {typeof isSubmitting !== 'undefined' && isSubmitting ? '업로드 중...' : '등록하기'}
                     </button>
                 </form>
             </div>

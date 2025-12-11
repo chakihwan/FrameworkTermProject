@@ -302,3 +302,47 @@ body {
   color: white;
   border-color: #e65100;
 }
+
+/* --- 예쁜 등록하기 버튼 (오렌지 그라데이션) --- */
+.submit-btn {
+  width: 100%;
+  padding: 18px;
+  margin-top: 30px;
+
+  /* 오렌지 그라데이션 배경 */
+  background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+  color: white;
+
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 1px;
+
+  /* 부드러운 그림자 (버튼이 떠 있는 느낌) */
+  box-shadow: 0 10px 20px rgba(230, 81, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* 마우스 올렸을 때 효과 (살짝 위로 올라감) */
+.submit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(230, 81, 0, 0.4);
+  background: linear-gradient(135deg, #ffb74d 0%, #f57c00 100%);
+}
+
+/* 클릭했을 때 효과 (눌리는 느낌) */
+.submit-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(230, 81, 0, 0.3);
+}
+
+/* 로딩 중일 때 (비활성화) */
+.submit-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

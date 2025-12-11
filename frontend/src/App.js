@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import WriteItem from './pages/WriteItem';
 import ItemDetail from './pages/ItemDetail';
+import FindAccount from './pages/FindAccount';
+
 import './App.css';
 
 import logoImg from './lost_found_logo.png';
@@ -61,6 +63,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/write" element={<WriteItem />} />
                 <Route path="/items/:id" element={<ItemDetail />} />
+                <Route path="/find-account" element={<FindAccount />} />
             </Routes>
 
             {/* ★ Footer 추가 */}

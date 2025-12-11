@@ -40,18 +40,18 @@ public class MemberController {
         }
     }
 
-    // ★ [추가] 아이디 찾기
+    // ★ [추가] 아이디 찾기 연결
     @PostMapping("/find-id")
     public ResponseEntity<String> findId(@RequestBody Map<String, String> request) {
         try {
-            String username = memberService.findId(request.get("name"), request.get("phoneNumber"));
-            return ResponseEntity.ok(username);
+            String foundId = memberService.findId(request.get("name"), request.get("phoneNumber"));
+            return ResponseEntity.ok(foundId);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("찾을 수 없음");
+            return ResponseEntity.badRequest().body("정보를 찾을 수 없습니다.");
         }
     }
 
-    // ★ [추가] 비밀번호 재설정
+    // ★ [추가] 비밀번호 재설정 연결
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
         try {
@@ -61,9 +61,9 @@ public class MemberController {
                     request.get("phoneNumber"),
                     request.get("newPassword")
             );
-            return ResponseEntity.ok("변경 성공");
+            return ResponseEntity.ok("비밀번호 변경 성공");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("정보 불일치");
+            return ResponseEntity.badRequest().body("정보가 일치하지 않습니다.");
         }
     }
 }

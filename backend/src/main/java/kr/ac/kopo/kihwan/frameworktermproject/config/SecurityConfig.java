@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy; // 추가됨
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,40 +19,51 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 1. 암호화 모듈 등록 (이게 있어야 비번을 암호화할 수 있음)
+    public SecurityConfig() {
+        // ★ 서버 켜질 때 이 로그가 안 찍히면, 패키지 위치가 잘못된 겁니다!
+        System.out.println("=== [SecurityConfig] 보안 설정이 로드되었습니다. ===");
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 2. 보안 필터 설정 (리액트 통신을 위해 꼭 필요!)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF 비활성화 (리액트와 통신할 땐 끄는 게 편함)
+                // 1. CSRF 해제 (Rest API 사용 시 불필요)
                 .csrf(csrf -> csrf.disable())
-                // CORS 설정 적용 (3000번 포트 허용)
+
+                // 2. CORS 설정 연결 (중요)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // 3. 주소별 권한 설정
+
+                // 3. 세션 관리 (JWT 등 사용 시 STATELESS가 맞지만, 일단 기본값 유지해도 무방)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+
+                // 4. 권한 설정 (순서 중요!)
                 .authorizeHttpRequests(auth -> auth
-                        // 회원가입, 로그인, 글쓰기(POST), 목록조회(GET), 이미지조회 등 모두 허용 + 댓글 조회와 쓰기 허용
-                        .requestMatchers("/api/members/**", "/api/items/**", "/images/**", "/api/comments/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/items").permitAll() // 글쓰기 POST 명시적 허용
+                        // OPTIONS 요청 허용
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // ★★★ 여기에 "/error"를 꼭 추가하세요! 그래야 진짜 에러 메시지가 보입니다. ★★★
+                        .requestMatchers("/auth/**", "/api/members/**", "/images/**", "/api/items/**", "/error").permitAll()
+
                         .anyRequest().authenticated()
                 );
 
         return http.build();
     }
 
-    // 3. CORS 구체적인 설정
+    // CORS 상세 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 리액트 주소
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // 프론트엔드 주소 확실하게 지정
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(true); // 쿠키/인증정보 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

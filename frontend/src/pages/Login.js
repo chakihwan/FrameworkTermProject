@@ -10,7 +10,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8081/auth/login', { username, password });
+            const response = await axios.post('http://localhost:8081/api/members/login', { username, password });
 
             // 로그인 성공 시 사용자 정보 저장
             localStorage.setItem('user', JSON.stringify(response.data));
@@ -132,9 +132,11 @@ const Login = () => {
                     </button>
                 </form>
 
-                {/* 회원가입 링크 */}
-                <div style={{ marginTop: '40px', fontSize: '14px', color: '#888', borderTop:'1px solid #f1f1f1', paddingTop:'30px' }}>
-                    아직 계정이 없으신가요? <Link to="/signup" style={{ color: '#e65100', fontWeight: 'bold', textDecoration:'none', marginLeft:'5px' }}>회원가입</Link>
+                {/* 링크 영역 */}
+                <div style={{ marginTop: '40px', fontSize: '14px', color: '#888', borderTop:'1px solid #f1f1f1', paddingTop:'30px', display:'flex', justifyContent:'center', gap:'20px' }}>
+                    <Link to="/signup" style={{ color: '#555', textDecoration:'none' }}>회원가입</Link>
+                    <span style={{color:'#ddd'}}>|</span>
+                    <Link to="/find-account" style={{ color: '#e65100', fontWeight: 'bold', textDecoration:'none' }}>아이디/비밀번호 찾기</Link>
                 </div>
             </div>
         </div>

@@ -20,7 +20,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8081/auth/signup', formData);
+            await axios.post('http://localhost:8081/api/members/signup', formData);
             alert('회원가입이 완료되었습니다! 로그인해주세요.');
             navigate('/login');
         } catch (error) {

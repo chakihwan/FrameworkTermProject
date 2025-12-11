@@ -99,10 +99,15 @@ function Home() {
 
     const handleSearch = (e) => { if (e.key === 'Enter') fetchItems(keyword); };
     const onSearchClick = () => fetchItems(keyword);
+    // 로그인 유저 정보 가져오기
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
-    // 필터링 & 페이지네이션 로직
+    // 필터링 로직 수정
     const filteredItems = items.filter(item => {
         if (filter === 'ALL') return true;
+        if (filter === 'MY') { // ★ [추가된 로직] 내가 쓴 글 필터링
+            return currentUser && item.writer?.username === currentUser.username;
+        }
         return item.itemType === filter;
     });
 
@@ -135,6 +140,16 @@ function Home() {
                 <button className={filter === 'ALL' ? 'active' : ''} onClick={() => {setFilter('ALL'); setCurrentPage(1);}}>ALL</button>
                 <button className={filter === 'LOST' ? 'active' : ''} onClick={() => {setFilter('LOST'); setCurrentPage(1);}}>잃어버렸어요😢</button>
                 <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => {setFilter('FOUND'); setCurrentPage(1);}}>제가 찾았습니다🔍</button>
+                {/* ★ [추가된 버튼] 로그인했을 때만 보임 */}
+                {currentUser && (
+                    <button
+                        className={filter === 'MY' ? 'active' : ''}
+                        onClick={() => {setFilter('MY'); setCurrentPage(1);}}
+                        style={{ marginLeft: '10px', color: '#e65100', borderColor: '#e65100' }}
+                    >
+                        🙋‍♂️ 내가 쓴 글
+                    </button>
+                )}
             </div>
 
             {/* 아이템 그리드 */}

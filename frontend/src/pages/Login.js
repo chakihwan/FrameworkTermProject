@@ -1,64 +1,142 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            // [Frontend -> Backend]
-            // 보내는 곳: React (여기)
-            // 받는 곳: SpringBoot MemberController의 @PostMapping("/login")
-            // 데이터 형태: { "username": "...", "password": "..." } (JSON)
-            const response = await axios.post('http://localhost:8081/api/members/login', {
-                username: username,
-                password: password
-            });
+            const response = await axios.post('http://localhost:8081/auth/login', { username, password });
 
-            // [Backend -> Frontend]
-            // 받는 데이터: 로그인 성공한 회원의 전체 정보 (id, name, studentId 등)
-            console.log("서버 응답 데이터:", response.data);
-
-            // 브라우저 저장소(LocalStorage)에 회원 정보 저장 (새로고침 해도 로그인 유지용)
+            // 로그인 성공 시 사용자 정보 저장
             localStorage.setItem('user', JSON.stringify(response.data));
+            alert(`${response.data.name}님 환영합니다!`);
 
-            alert('로그인 성공!');
-
-            // [수정 후]
-            window.location.replace('/'); // 페이지를 새로고침하며 메인으로 이동 (App.js가 다시 실행됨)
-
+            // 메인 화면으로 이동 (새로고침 효과를 위해 window.location 사용 가능하지만, 리액트 방식 권장)
+            navigate('/');
+            window.location.reload(); // 네비게이션 바 상태 갱신을 위해 새로고침
         } catch (error) {
-            console.error("로그인 에러:", error);
-            alert('로그인 실패! 아이디나 비밀번호를 확인하세요.');
+            alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
         }
     };
 
+    // 스타일 정의 (Signup.js와 통일감 있게)
+    const containerStyle = {
+        maxWidth: '450px',
+        margin: '80px auto',
+        padding: '20px'
+    };
+
+    const cardStyle = {
+        background: 'white',
+        padding: '50px',
+        borderRadius: '20px',
+        boxShadow: '0 15px 40px rgba(0,0,0,0.08)',
+        textAlign: 'center',
+        border: '1px solid #eee'
+    };
+
+    const inputGroupStyle = {
+        marginBottom: '25px',
+        textAlign: 'left'
+    };
+
+    const labelStyle = {
+        display: 'block',
+        marginBottom: '8px',
+        fontSize: '13px',
+        fontWeight: 'bold',
+        color: '#555',
+        marginLeft: '5px'
+    };
+
+    const inputStyle = {
+        width: '100%',
+        padding: '15px',
+        border: '1px solid #ddd',
+        borderRadius: '10px',
+        fontSize: '16px',
+        boxSizing: 'border-box',
+        transition: 'border-color 0.3s',
+        backgroundColor: '#fafafa'
+    };
+
+    const buttonStyle = {
+        width: '100%',
+        padding: '18px',
+        marginTop: '10px',
+        background: 'linear-gradient(135deg, #ff9800 0%, #e65100 100%)', // 오렌지 그라데이션
+        color: 'white',
+        border: 'none',
+        borderRadius: '12px',
+        fontSize: '16px',
+        fontWeight: '800',
+        cursor: 'pointer',
+        boxShadow: '0 10px 20px rgba(230, 81, 0, 0.25)',
+        transition: 'transform 0.2s',
+        letterSpacing: '1px'
+    };
+
     return (
-        <div style={{ padding: '50px', textAlign: 'center' }}>
-            <h2 style={{ letterSpacing: '2px', textTransform: 'uppercase' }}>Login</h2>
-            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-                <input
-                    placeholder="USERNAME"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    style={{ padding: '10px', width: '250px', border: '1px solid #ccc' }}
-                />
-                <input
-                    type="password"
-                    placeholder="PASSWORD"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={{ padding: '10px', width: '250px', border: '1px solid #ccc' }}
-                />
-                <button type="submit" style={{ padding: '10px 40px', background: 'black', color: 'white', border: 'none', cursor: 'pointer' }}>
-                    LOGIN
-                </button>
-            </form>
+        <div style={containerStyle}>
+            <div style={cardStyle}>
+
+                {/* 헤더 */}
+                <h2 style={{ fontSize: '32px', color: '#e65100', margin: '0 0 10px 0', fontWeight: '900', letterSpacing:'-1px' }}>LOGIN</h2>
+                <p style={{ color: '#999', fontSize: '14px', marginBottom: '50px' }}>서비스 이용을 위해 로그인해주세요.</p>
+
+                <form onSubmit={handleSubmit}>
+
+                    {/* 아이디 입력 */}
+                    <div style={inputGroupStyle}>
+                        <label style={labelStyle}>아이디 (ID)</label>
+                        <input
+                            type="text"
+                            placeholder="아이디를 입력하세요"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            style={inputStyle}
+                            onFocus={(e)=>e.target.style.borderColor='#e65100'}
+                            onBlur={(e)=>e.target.style.borderColor='#ddd'}
+                            required
+                        />
+                    </div>
+
+                    {/* 비밀번호 입력 */}
+                    <div style={inputGroupStyle}>
+                        <label style={labelStyle}>비밀번호 (Password)</label>
+                        <input
+                            type="password"
+                            placeholder="비밀번호를 입력하세요"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            style={inputStyle}
+                            onFocus={(e)=>e.target.style.borderColor='#e65100'}
+                            onBlur={(e)=>e.target.style.borderColor='#ddd'}
+                            required
+                        />
+                    </div>
+
+                    {/* 로그인 버튼 */}
+                    <button
+                        type="submit"
+                        style={buttonStyle}
+                        onMouseDown={(e)=>e.currentTarget.style.transform='scale(0.98)'}
+                        onMouseUp={(e)=>e.currentTarget.style.transform='scale(1)'}
+                    >
+                        로그인하기
+                    </button>
+                </form>
+
+                {/* 회원가입 링크 */}
+                <div style={{ marginTop: '40px', fontSize: '14px', color: '#888', borderTop:'1px solid #f1f1f1', paddingTop:'30px' }}>
+                    아직 계정이 없으신가요? <Link to="/signup" style={{ color: '#e65100', fontWeight: 'bold', textDecoration:'none', marginLeft:'5px' }}>회원가입</Link>
+                </div>
+            </div>
         </div>
     );
 };

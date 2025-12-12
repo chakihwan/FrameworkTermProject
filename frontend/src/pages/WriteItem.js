@@ -11,6 +11,23 @@ const WriteItem = () => {
     const [isPhoneOpen, setIsPhoneOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false); // ★ 로딩 상태 추가
+    // 파일 및 드래그 상태 관리
+    const [isDragging, setIsDragging] = useState(false);
+
+    // ★ 드래그 이벤트 핸들러 시작
+    const onDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); };
+    const onDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); };
+    const onDragOver = (e) => { e.preventDefault(); e.stopPropagation(); if (e.dataTransfer.files) setIsDragging(true); };
+
+    const onDrop = (e) => {
+        e.preventDefault(); e.stopPropagation(); setIsDragging(false);
+        // 드롭된 파일이 있으면 첫 번째 파일만 선택
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            setFile(e.dataTransfer.files[0]);
+            e.dataTransfer.clearData();
+        }
+    };
+    // ★ 드래그 이벤트 핸들러 끝
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -120,13 +137,21 @@ const WriteItem = () => {
                         </div>
                     </div>
 
-                    {/* 4. 파일 업로드 (드래그앤드롭 스타일) */}
-                    <div style={{ border: '2px dashed #ccc', padding: '30px', textAlign: 'center', borderRadius: '12px', backgroundColor: '#fafafa', transition: 'all 0.3s', cursor:'pointer' }} onDragOver={(e)=>{e.currentTarget.style.borderColor='#999';e.currentTarget.style.backgroundColor='#f0f0f0'}} onDragLeave={(e)=>{e.currentTarget.style.borderColor='#ccc';e.currentTarget.style.backgroundColor='#fafafa'}}>
-                        <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#777', fontWeight:'bold' }}>📷 사진 업로드 (선택)</p>
-                        <p style={{ fontSize:'12px', color:'#aaa', marginBottom:'15px' }}>클릭하거나 파일을 여기로 드래그하세요.</p>
+                    {/* 4. 드래그 앤 드롭 영역 */}
+                    <div
+                        onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDragOver={onDragOver} onDrop={onDrop}
+                        style={{
+                            border: isDragging ? '2px dashed #e65100' : '2px dashed #ccc',
+                            backgroundColor: isDragging ? '#fff3e0' : '#fafafa',
+                            padding: '40px', textAlign: 'center', borderRadius: '12px', transition: 'all 0.3s', cursor:'pointer'
+                        }}
+                    >
+                        <p style={{ margin: '0 0 10px 0', fontSize: '15px', color: '#555', fontWeight:'bold' }}>📷 사진 업로드</p>
+                        <p style={{ fontSize:'13px', color:'#aaa', marginBottom:'15px' }}>
+                            {file ? `선택된 파일: ${file.name}` : '여기로 파일을 끌어놓거나 클릭하세요.'}
+                        </p>
                         <input type="file" onChange={(e) => setFile(e.target.files[0])} accept="image/*" style={{ display:'none' }} id="fileUpload" />
                         <label htmlFor="fileUpload" style={{ padding:'8px 20px', background:'#fff', border:'1px solid #ccc', borderRadius:'5px', fontSize:'13px', cursor:'pointer', fontWeight:'bold', color:'#555' }}>파일 선택</label>
-                        {file && <p style={{marginTop:'15px', fontSize:'13px', color:'#2ecc71', fontWeight:'bold'}}>✅ {file.name}</p>}
                     </div>
 
                     {/* 등록 버튼 (스타일 교체됨) */}

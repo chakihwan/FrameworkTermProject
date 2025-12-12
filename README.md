@@ -87,6 +87,50 @@
 ![detail_1.png](images/detail_1.png)
 ![detail_2.png](images/detail_2.png)
 
+## 데이터베이스 설계 (E-R Diagram)
+
+시스템의 핵심 엔티티인 **회원(Member)**, **분실물(LostItem)**, **댓글(Comment)** 간의 관계를 설계하였습니다.
+
+### 엔티티 관계 설명 (Entity Relationship)
+
+#### 1. Member (회원)
+* **설명**: 서비스 이용자의 계정 정보를 관리하는 엔티티입니다.
+* **Primary Key (PK)**: `id` (Long, Auto Increment)
+* **주요 속성**:
+    * `username` (아이디, Unique, Not Null): 로그인 시 사용하는 고유 아이디
+    * `password` (비밀번호, Not Null): 암호화되어 저장되는 비밀번호
+    * `studentId` (학번, Unique, Not Null): 교내 구성원 인증을 위한 고유 학번
+    * `name` (이름): 사용자의 실명
+    * `phoneNumber` (전화번호): 연락처 정보
+    * `role` (권한): 사용자 권한 구분 (ENUM: `USER`, `ADMIN`)
+
+#### 2. LostItem (분실물 게시글)
+* **설명**: 분실물 또는 습득물에 대한 상세 정보를 저장하는 게시글 엔티티입니다.
+* **Primary Key (PK)**: `id` (Long, Auto Increment)
+* **Foreign Key (FK)**: `member_id` (N:1 관계, 작성자)
+* **주요 속성**:
+    * `title` (제목): 게시글 제목
+    * `content` (내용): 분실/습득물에 대한 상세 설명 (최대 1000자)
+    * `itemType` (유형): 게시글 성격 구분 (`LOST`: 분실, `FOUND`: 습득)
+    * `status` (상태): 물건의 현재 상태 (ENUM: `ING`: 찾는 중, `DONE`: 해결됨)
+    * `imagePath` (이미지 경로): 업로드된 사진 파일의 저장 경로 (Nullable)
+    * `kakaoLink` (카카오톡 링크): 오픈채팅 등 외부 연락망 링크 (Nullable)
+    * `isPhoneOpen` (전화번호 공개 여부): 작성자의 전화번호 공개 설정 (Boolean)
+    * `regDate` (등록일): 게시글 생성 일시 (TimeStamp)
+
+#### 3. Comment (댓글)
+* **설명**: 게시글에 대한 문의 및 소통 내용을 저장하는 엔티티입니다.
+* **Primary Key (PK)**: `id` (Long, Auto Increment)
+* **Foreign Key (FK)**:
+    * `lost_item_id` (N:1 관계, 해당 게시글)
+    * `member_id` (N:1 관계, 댓글 작성자)
+* **주요 속성**:
+    * `content` (내용): 댓글 본문
+    * `isSecret` (비밀글 여부): 작성자와 관리자만 볼 수 있는 비밀 댓글 설정 (Boolean)
+    * `regDate` (등록일): 댓글 생성 일시 (TimeStamp)
+
+> (※ 참고: 위 내용을 바탕으로 E-R 다이어그램을 그리실 때, **Member**는 **LostItem**과 **Comment**에 대해 **1:N 관계**를 가지며, **LostItem**은 **Comment**에 대해 **1:N 관계**를 가집니다.)
+
 ## 🚀 설치 및 실행 (Installation)
 
 ### Prerequisites

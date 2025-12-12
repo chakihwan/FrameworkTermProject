@@ -152,7 +152,7 @@ erDiagram
         String title
         String content
         String itemType "ENUM(LOST, FOUND)"
-        String status "ENUM(ING, DONE)"
+        String status "(ING, DONE)"
         String imagePath
         String kakaoLink
         boolean isPhoneOpen

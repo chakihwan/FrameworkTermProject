@@ -36,6 +36,22 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    // 댓글 삭제 기능
+    public void deleteComment(Long commentId, String username) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 댓글입니다."));
+
+        Member user = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자 정보가 없습니다."));
+
+        // 작성자 본인이거나 관리자(ADMIN)면 삭제 가능
+        if (comment.getWriter().getUsername().equals(username) || user.getRole() == kr.ac.kopo.kihwan.frameworktermproject.domain.Role.ADMIN) {
+            commentRepository.delete(comment);
+        } else {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+    }
+
     public List<Comment> getComments(Long itemId) {
         return commentRepository.findByLostItemId(itemId);
     }

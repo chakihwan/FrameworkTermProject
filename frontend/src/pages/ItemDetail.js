@@ -205,8 +205,13 @@ const ItemDetail = () => {
                 <div style={{ display:'flex', flexDirection:'column', gap:'15px' }}>
                     {comments.map((comment) => {
                         const isSecretComment = comment.secret || comment.isSecret;
-                        const canSee = currentUser && (currentUser.username === comment.writer?.username || currentUser.username === item.writer?.username);
-                        return (
+
+                        // 작성자거나, 글 주인이거나, ★관리자(ADMIN)면 볼 수 있음
+                        const canSee = currentUser && (
+                            currentUser.username === comment.writer?.username ||
+                            currentUser.username === item.writer?.username ||
+                            currentUser.role === 'ADMIN'
+                        );                        return (
                             <div key={comment.id} style={{ padding: '20px', background: isSecretComment && !canSee ? '#f9f9f9' : '#fff', border:'1px solid #eee', borderRadius: '12px' }}>
                                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px', alignItems:'center' }}>
                   <span style={{ fontWeight: 'bold', fontSize:'15px', color:'#333', display:'flex', alignItems:'center', gap:'8px' }}>

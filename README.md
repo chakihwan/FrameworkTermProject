@@ -129,7 +129,46 @@
     * `isSecret` (비밀글 여부): 작성자와 관리자만 볼 수 있는 비밀 댓글 설정 (Boolean)
     * `regDate` (등록일): 댓글 생성 일시 (TimeStamp)
 
-> (※ 참고: 위 내용을 바탕으로 E-R 다이어그램을 그리실 때, **Member**는 **LostItem**과 **Comment**에 대해 **1:N 관계**를 가지며, **LostItem**은 **Comment**에 대해 **1:N 관계**를 가집니다.)
+### 3.2. ER Diagram (Visualized)
+
+```mermaid
+erDiagram
+    MEMBER ||--o{ LOST_ITEM : "writes (1:N)"
+    MEMBER ||--o{ COMMENT : "writes (1:N)"
+    LOST_ITEM ||--o{ COMMENT : "has (1:N)"
+
+    MEMBER {
+        Long id PK "Auto Increment"
+        String username "Unique, Not Null"
+        String password "Not Null"
+        String studentId "Unique, Not Null"
+        String name
+        String phoneNumber
+        String role "ENUM(USER, ADMIN)"
+    }
+
+    LOST_ITEM {
+        Long id PK "Auto Increment"
+        String title
+        String content
+        String itemType "ENUM(LOST, FOUND)"
+        String status "ENUM(ING, DONE)"
+        String imagePath
+        String kakaoLink
+        boolean isPhoneOpen
+        LocalDateTime regDate
+        Long member_id FK
+    }
+
+    COMMENT {
+        Long id PK "Auto Increment"
+        String content
+        boolean isSecret
+        LocalDateTime regDate
+        Long member_id FK
+        Long lost_item_id FK
+    }
+   ```
 
 ## 🚀 설치 및 실행 (Installation)
 

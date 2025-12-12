@@ -65,6 +65,22 @@ const ItemDetail = () => {
         } catch (err) { alert('댓글 등록 실패'); }
     };
 
+    //  댓글 삭제 함수
+    const handleDeleteComment = async (commentId) => {
+        if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
+
+        try {
+            // (주의: 아까 IP 주소로 바꿨다면 localhost 대신 IP를 쓰세요!)
+            await axios.delete(`http://localhost:8081/api/comments/${commentId}`, {
+                data: { username: currentUser.username } // 내 아이디를 같이 보냄
+            });
+            alert("댓글이 삭제되었습니다.");
+            fetchData(); // 댓글 목록 새로고침
+        } catch (err) {
+            alert("삭제 권한이 없거나 실패했습니다.");
+        }
+    };
+
     if (!item) return <div style={{textAlign:'center', padding:'100px', color:'#999', fontSize:'18px'}}>Loading...</div>;
 
     const isWriter = currentUser && currentUser.username === item.writer?.username;
@@ -211,14 +227,40 @@ const ItemDetail = () => {
                             currentUser.username === comment.writer?.username ||
                             currentUser.username === item.writer?.username ||
                             currentUser.role === 'ADMIN'
-                        );                        return (
+                        );
+                        // 작성자이거나 관리자일 때만 삭제 버튼 표시
+                        const canDelete = currentUser && (
+                            currentUser.username === comment.writer?.username ||
+                            currentUser.role === 'ADMIN'
+                        );
+                        return (
                             <div key={comment.id} style={{ padding: '20px', background: isSecretComment && !canSee ? '#f9f9f9' : '#fff', border:'1px solid #eee', borderRadius: '12px' }}>
                                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'10px', alignItems:'center' }}>
-                  <span style={{ fontWeight: 'bold', fontSize:'15px', color:'#333', display:'flex', alignItems:'center', gap:'8px' }}>
-                    {comment.writer?.name}
-                      {isSecretComment && <span style={{fontSize:'12px', padding:'2px 6px', background:'#eee', borderRadius:'4px', color:'#777'}}>비밀글 🔒</span>}
-                  </span>
-                                    <span style={{ fontSize: '13px', color: '#aaa' }}>{new Date(comment.regDate).toLocaleString()}</span>
+
+                                    {/* 작성자 이름 */}
+                                    <span style={{ fontWeight: 'bold', fontSize:'15px', color:'#333', display:'flex', alignItems:'center', gap:'8px' }}>
+                                        {comment.writer?.name}
+                                        {isSecretComment && <span style={{fontSize:'12px', padding:'2px 6px', background:'#eee', borderRadius:'4px', color:'#777'}}>비밀글 🔒</span>}
+                                    </span>
+
+                                    {/* 날짜 및 삭제 버튼 영역 */}
+                                    <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
+                                        <span style={{ fontSize: '13px', color: '#aaa' }}>{new Date(comment.regDate).toLocaleString()}</span>
+
+                                        {/* ★ [추가] 삭제 버튼 (조건부 렌더링) */}
+                                        {canDelete && (
+                                            <button
+                                                onClick={() => handleDeleteComment(comment.id)}
+                                                style={{
+                                                    border:'none', background:'none', color:'#ff5252', fontWeight:'bold',
+                                                    cursor:'pointer', fontSize:'13px', padding:'0 5px'
+                                                }}
+                                            >
+                                                삭제
+                                            </button>
+                                        )}
+                                    </div>
+
                                 </div>
                                 <div style={{ fontSize: '15px', color: '#555', lineHeight:'1.6' }}>
                                     {isSecretComment && !canSee ? <span style={{ color: '#bbb', fontStyle:'italic' }}>비밀 댓글입니다. (작성자와 관리자만 볼 수 있습니다.)</span> : comment.content}

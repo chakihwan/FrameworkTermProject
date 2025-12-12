@@ -18,9 +18,9 @@ const ItemDetail = () => {
 
     const fetchData = async () => {
         try {
-            const itemRes = await axios.get(`http://localhost:8081/api/items/${id}`);
+            const itemRes = await axios.get(`http://192.168.24.186:8081/api/items/${id}`);
             setItem(itemRes.data);
-            const commentRes = await axios.get(`http://localhost:8081/api/comments/${id}`);
+            const commentRes = await axios.get(`http://192.168.24.186:8081/api/comments/${id}`);
             setComments(commentRes.data);
         } catch (err) {
             console.error(err);
@@ -36,7 +36,7 @@ const ItemDetail = () => {
 
         if (window.confirm(confirmMsg)) {
             try {
-                await axios.put(`http://localhost:8081/api/items/${id}/status`, { status: newStatus });
+                await axios.put(`http://192.168.24.186:8081/api/items/${id}/status`, { status: newStatus });
                 setItem({ ...item, status: newStatus });
             } catch (err) { alert('상태 변경 실패'); }
         }
@@ -45,7 +45,7 @@ const ItemDetail = () => {
     // 삭제 기능 (기존 로직 유지)
     const handleDelete = async () => {
         if (window.confirm('정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-            await axios.delete(`http://localhost:8081/api/items/${id}`);
+            await axios.delete(`http://192.168.24.186:8081/api/items/${id}`);
             alert('삭제되었습니다.');
             navigate('/');
         }
@@ -58,7 +58,7 @@ const ItemDetail = () => {
         if (!commentContent.trim()) return;
 
         try {
-            await axios.post('http://localhost:8081/api/comments', {
+            await axios.post('http://192.168.24.186:8081/api/comments', {
                 itemId: id, content: commentContent, username: currentUser.username, secret: isSecret
             });
             setCommentContent(''); setIsSecret(false); fetchData();
@@ -132,7 +132,7 @@ const ItemDetail = () => {
                     {/* 2. 이미지 영역 (시원하게 키움) */}
                     <div style={{ width: '100%', marginBottom: '50px', textAlign: 'center', backgroundColor: '#f8f9fa', borderRadius:'15px', overflow:'hidden', border:'1px solid #eee' }}>
                         {item.imagePath ? (
-                            <img src={`http://localhost:8081/images/${item.imagePath}`} alt="item" style={{ width:'100%', maxHeight:'700px', objectFit:'contain', filter: item.status==='DONE' ? 'grayscale(100%) opacity(0.8)' : 'none', transition: 'all 0.3s', display: 'block' }} />
+                            <img src={`http://192.168.24.186:8081/images/${item.imagePath}`} alt="item" style={{ width:'100%', maxHeight:'700px', objectFit:'contain', filter: item.status==='DONE' ? 'grayscale(100%) opacity(0.8)' : 'none', transition: 'all 0.3s', display: 'block' }} />
                         ) : (
                             <div style={{color:'#ccc', padding:'80px 0', fontSize:'16px', fontWeight:'bold'}}>이미지가 없습니다.</div>
                         )}

@@ -38,7 +38,7 @@ const WriteItem = () => {
         setIsSubmitting(true); // ★ 로딩 시작
 
         try {
-            await axios.post('http://localhost:8081/api/items', formData);
+            await axios.post('http://192.168.24.186:8081/api/items', formData);
             alert('등록이 완료되었습니다!');
             navigate('/');
         } catch (error) {

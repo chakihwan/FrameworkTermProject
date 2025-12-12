@@ -92,7 +92,7 @@ function Home() {
 
     const fetchItems = async (searchKeyword = '') => {
         try {
-            const res = await axios.get('http://localhost:8081/api/items', {
+            const res = await axios.get('http://192.168.24.186:8081/api/items', {
                 params: { keyword: searchKeyword }
             });
             setItems(res.data);
@@ -167,7 +167,7 @@ function Home() {
                     <div key={item.id} className="card" onClick={() => navigate(`/items/${item.id}`)}>
                         <div className="card-image">
                             {item.imagePath ? (
-                                <img src={`http://localhost:8081/images/${item.imagePath}`} alt="item" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={`http://192.168.24.186:8081/images/${item.imagePath}`} alt="item" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
                                 <span>{item.title.substring(0, 1)}</span>
                             )}

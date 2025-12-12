@@ -22,7 +22,7 @@ const FindAccount = () => {
     const handleFindId = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:8081/api/members/find-id', {
+            const res = await axios.post('http://192.168.24.186:8081/api/members/find-id', {
                 name: formData.name,
                 phoneNumber: formData.phoneNumber
             });
@@ -36,7 +36,7 @@ const FindAccount = () => {
     const handleResetPw = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8081/api/members/reset-password', formData);
+            await axios.post('http://192.168.24.186:8081/api/members/reset-password', formData);
             alert('비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요.');
             navigate('/login');
         } catch (err) {

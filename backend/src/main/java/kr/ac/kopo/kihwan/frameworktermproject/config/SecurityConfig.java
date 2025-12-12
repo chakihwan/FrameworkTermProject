@@ -45,8 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // OPTIONS 요청 허용
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // ★★★ 여기에 "/error"를 꼭 추가하세요! 그래야 진짜 에러 메시지가 보입니다. ★★★
-                        .requestMatchers("/auth/**", "/api/members/**", "/images/**", "/api/items/**", "/error").permitAll()
+                        // ★★★
+                        .requestMatchers("/auth/**", "/api/members/**", "/api/comments/**", "/images/**", "/api/items/**", "/error").permitAll()
 
                         .anyRequest().authenticated()
                 );
@@ -60,7 +60,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 프론트엔드 주소 확실하게 지정
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000",
+                                         "http://192.168.24.186:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 쿠키/인증정보 허용

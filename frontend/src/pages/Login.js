@@ -10,7 +10,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8081/api/members/login', { username, password });
+            const response = await axios.post('http://192.168.24.186:8081/api/members/login', { username, password });
 
             // 로그인 성공 시 사용자 정보 저장
             localStorage.setItem('user', JSON.stringify(response.data));

@@ -26,4 +26,8 @@ public class Member {
 
     // 5. 전화번호
     private String phoneNumber;
+
+    // ★ [추가] 권한 (USER 또는 ADMIN)
+    @Enumerated(EnumType.STRING) // DB에 문자열로 저장됨
+    private Role role;
 }

@@ -124,10 +124,38 @@ function Home() {
         // 1. 메인 컨테이너 클래스 적용
         <div className="main-container">
 
-            {/* 2. Hero Section 클래스 적용 */}
+            {/* Hero Section (배너) */}
             <div className="hero-section">
                 <h1 className="hero-title">내 에어팟... 혹시 여기?</h1>
                 <p className="hero-subtitle">캠퍼스의 모든 분실물, 여기서 쉽고 빠르게 찾아보세요.</p>
+
+                {/* ★ [추가] 바로 등록하기 버튼 */}
+                <button
+                    onClick={() => navigate('/write')}
+                    style={{
+                        marginTop: '30px',
+                        padding: '15px 40px',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        color: '#e65100', // 글자는 오렌지색
+                        backgroundColor: 'white', // 배경은 흰색
+                        border: '2px solid white',
+                        borderRadius: '50px',
+                        cursor: 'pointer',
+                        boxShadow: '0 5px 15px rgba(230, 81, 0, 0.2)',
+                        transition: 'all 0.3s'
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#e65100';
+                        e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = 'white';
+                        e.currentTarget.style.color = '#e65100';
+                    }}
+                >
+                    + 분실물 등록하기
+                </button>
             </div>
 
             {/* 검색창 (기존 클래스 활용) */}

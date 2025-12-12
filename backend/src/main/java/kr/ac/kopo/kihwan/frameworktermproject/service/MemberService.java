@@ -1,5 +1,6 @@
 package kr.ac.kopo.kihwan.frameworktermproject.service;
 
+import kr.ac.kopo.kihwan.frameworktermproject.domain.Role;
 import kr.ac.kopo.kihwan.frameworktermproject.dto.LoginRequest;
 import kr.ac.kopo.kihwan.frameworktermproject.dto.SignupRequest;
 import kr.ac.kopo.kihwan.frameworktermproject.domain.Member;
@@ -35,6 +36,12 @@ public class MemberService {
         member.setStudentId(request.getStudentId());
         member.setName(request.getName());
         member.setPhoneNumber(request.getPhoneNumber());
+
+        if ("admin".equals(request.getUsername())) {
+            member.setRole(Role.ADMIN); // 아이디가 'admin'이면 관리자 권한 부여
+        } else {
+            member.setRole(Role.USER);  // 나머지는 일반 유저
+        }
 
         return memberRepository.save(member);
     }

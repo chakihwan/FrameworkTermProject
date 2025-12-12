@@ -68,6 +68,8 @@ const ItemDetail = () => {
     if (!item) return <div style={{textAlign:'center', padding:'100px', color:'#999', fontSize:'18px'}}>Loading...</div>;
 
     const isWriter = currentUser && currentUser.username === item.writer?.username;
+    // ★ [추가] 관리자 확인 (Role이 'ADMIN'인 경우)
+    const isAdmin = currentUser && currentUser.role === 'ADMIN';
     const isPhonePublic = item.phoneOpen || item.isPhoneOpen; // 로직 유지
 
     return (
@@ -141,13 +143,24 @@ const ItemDetail = () => {
                     {/* 3. 본문 내용 */}
                     <div style={{ minHeight: '150px', whiteSpace: 'pre-wrap', lineHeight: '1.8', fontSize: '17px', color: item.status==='DONE'?'#888':'#444', marginBottom: '50px' }}>{item.content}</div>
 
-                    {/* 4. 작성자 메뉴 (모던한 버튼) */}
-                    {isWriter && (
+                    {/* 4. 작성자 또는 관리자 메뉴 */}
+                    {(isWriter || isAdmin) && (
                         <div style={{ marginTop: '50px', padding: '25px', backgroundColor: '#f8f9fa', borderRadius: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border:'1px solid #eee' }}>
-                            <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#555' }}>⚙️ 작성자 관리 메뉴</span>
+                          <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#555' }}>
+                              {isAdmin ? '👮‍♂️ 관리자 메뉴' : '⚙️ 작성자 관리 메뉴'}
+                          </span>
                             <div style={{ display: 'flex', gap: '12px' }}>
-                                <button onClick={toggleStatus} style={{ padding: '12px 24px', cursor: 'pointer', border: '1px solid #555', backgroundColor: item.status === 'ING' ? '#555' : '#fff', color: item.status === 'ING' ? '#fff' : '#555', borderRadius: '8px', fontWeight: 'bold', transition: 'all 0.3s', fontSize:'14px' }}>{item.status === 'ING' ? '✅ 해결 완료 처리' : '🔄 다시 찾는 중으로'}</button>
-                                <button onClick={handleDelete} style={{ padding: '12px 24px', cursor: 'pointer', background: '#fff0f0', color: '#e74c3c', border: '1px solid #e74c3c', borderRadius: '8px', fontWeight: 'bold', fontSize:'14px' }}>🗑 삭제하기</button>
+                                {/* 상태 변경은 작성자만 가능하게 할지, 관리자도 할지 선택 (여기선 작성자만) */}
+                                {isWriter && (
+                                    <button onClick={toggleStatus} style={{ padding: '12px 24px', cursor: 'pointer', border: '1px solid #555', backgroundColor: item.status === 'ING' ? '#555' : '#fff', color: item.status === 'ING' ? '#fff' : '#555', borderRadius: '8px', fontWeight: 'bold', transition: 'all 0.3s', fontSize:'14px' }}>
+                                        {item.status === 'ING' ? '✅ 해결 완료 처리' : '🔄 다시 찾는 중으로'}
+                                    </button>
+                                )}
+
+                                {/* 삭제는 관리자도 가능! */}
+                                <button onClick={handleDelete} style={{ padding: '12px 24px', cursor: 'pointer', background: '#fff0f0', color: '#e74c3c', border: '1px solid #e74c3c', borderRadius: '8px', fontWeight: 'bold', fontSize:'14px' }}>
+                                    🗑 삭제하기
+                                </button>
                             </div>
                         </div>
                     )}

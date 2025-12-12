@@ -1,4 +1,4 @@
-# ![Project Banner](./frontend/src/lost_found_logo.png) Campus Lost & Found (캠퍼스 분실물 찾기 서비스)
+# ![Project Banner](./frontend/src/lost_found_logo.png){: width="20%" height="20%"} Campus Lost & Found (캠퍼스 분실물 찾기 서비스)
 
 > **"학교 안에서 잃어버린 물건, 경찰서까지 가지 말고 여기서 바로 찾자!"**
 > 복잡한 절차 없이 학우들과 직접 소통하며 빠르게 물건을 주고받을 수 있는 캠퍼스 전용 분실물 플랫폼입니다.

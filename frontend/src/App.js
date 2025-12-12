@@ -92,6 +92,7 @@ function Home() {
 
     const fetchItems = async (searchKeyword = '') => {
         try {
+            // ★ 본인 IP 확인 필수
             const res = await axios.get('http://192.168.24.186:8081/api/items', {
                 params: { keyword: searchKeyword }
             });
@@ -102,13 +103,11 @@ function Home() {
 
     const handleSearch = (e) => { if (e.key === 'Enter') fetchItems(keyword); };
     const onSearchClick = () => fetchItems(keyword);
-    // 로그인 유저 정보 가져오기
     const currentUser = JSON.parse(localStorage.getItem('user'));
 
-    // 필터링 로직 수정
     const filteredItems = items.filter(item => {
         if (filter === 'ALL') return true;
-        if (filter === 'MY') { // ★ [추가된 로직] 내가 쓴 글 필터링
+        if (filter === 'MY') {
             return currentUser && item.writer?.username === currentUser.username;
         }
         return item.itemType === filter;
@@ -121,15 +120,13 @@ function Home() {
     const handlePageChange = (n) => { setCurrentPage(n); window.scrollTo(0, 0); };
 
     return (
-        // 1. 메인 컨테이너 클래스 적용
         <div className="main-container">
 
-            {/* Hero Section (배너) */}
+            {/* Hero Section */}
             <div className="hero-section">
                 <h1 className="hero-title">내 에어팟... 혹시 여기?</h1>
                 <p className="hero-subtitle">캠퍼스의 모든 분실물, 여기서 쉽고 빠르게 찾아보세요.</p>
 
-                {/* ★ [추가] 바로 등록하기 버튼 */}
                 <button
                     onClick={() => navigate('/write')}
                     style={{
@@ -137,8 +134,8 @@ function Home() {
                         padding: '15px 40px',
                         fontSize: '18px',
                         fontWeight: 'bold',
-                        color: '#e65100', // 글자는 오렌지색
-                        backgroundColor: 'white', // 배경은 흰색
+                        color: '#e65100',
+                        backgroundColor: 'white',
                         border: '2px solid white',
                         borderRadius: '50px',
                         cursor: 'pointer',
@@ -158,7 +155,7 @@ function Home() {
                 </button>
             </div>
 
-            {/* 검색창 (기존 클래스 활용) */}
+            {/* 검색창 */}
             <div className="search-container">
                 <input type="text" className="search-input" placeholder="SEARCH (제목, 내용)"
                        value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={handleSearch}
@@ -171,7 +168,6 @@ function Home() {
                 <button className={filter === 'ALL' ? 'active' : ''} onClick={() => {setFilter('ALL'); setCurrentPage(1);}}>ALL</button>
                 <button className={filter === 'LOST' ? 'active' : ''} onClick={() => {setFilter('LOST'); setCurrentPage(1);}}>잃어버렸어요😢</button>
                 <button className={filter === 'FOUND' ? 'active' : ''} onClick={() => {setFilter('FOUND'); setCurrentPage(1);}}>제가 찾았습니다🔍</button>
-                {/* ★ [추가된 버튼] 로그인했을 때만 보임 */}
                 {currentUser && (
                     <button
                         className={filter === 'MY' ? 'active' : ''}
@@ -193,27 +189,60 @@ function Home() {
 
                 {currentItems.map(item => (
                     <div key={item.id} className="card" onClick={() => navigate(`/items/${item.id}`)}>
+
+                        {/* 1. 이미지 영역 */}
                         <div className="card-image">
                             {item.imagePath ? (
                                 <img src={`http://192.168.24.186:8081/images/${item.imagePath}`} alt="item" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
                                 <span>{item.title.substring(0, 1)}</span>
                             )}
-                            {/* SOLVED 오버레이 클래스 적용 */}
+
+                            {/* ★ [변경] 태그를 이미지 왼쪽 상단에 오버레이로 배치 */}
+                            <span className={`tag-badge ${item.itemType === 'LOST' ? 'lost' : 'found'} card-tag-overlay`}>
+                                {item.itemType}
+                            </span>
+
+                            {/* SOLVED 오버레이 */}
                             {item.status === 'DONE' && <div className="card-solved-overlay">SOLVED</div>}
                         </div>
 
-                        {/* 3. 태그 디자인 클래스 적용 (JS로 조건부 클래스 부여) */}
-                        <div className="card-info-text">
-                             <span className={`tag-badge ${item.itemType === 'LOST' ? 'lost' : 'found'}`}>
-                                {item.itemType}
-                            </span>
-                        </div>
+                        {/* 2. 제목 영역 */}
+                        <h3 className={`card-title ${item.status === 'DONE' ? 'done-text' : ''}`} style={{ textAlign:'left', padding:'0 10px', marginTop:'15px' }}>
+                            {item.title}
+                        </h3>
 
-                        <h3 className={`card-title ${item.status === 'DONE' ? 'done-text' : ''}`}>{item.title}</h3>
-                        <p className="card-info">
-                            {item.writer?.name} · {new Date(item.regDate).toLocaleDateString()}
-                        </p>
+                        {/* 3. 하단 정보 영역 (작성자/날짜 + 댓글 개수) */}
+                        <div style={{
+                            padding: '0 10px 20px 10px',
+                            marginTop: '10px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            color: '#999',
+                            fontSize: '13px'
+                        }}>
+                            {/* 왼쪽: 작성자 및 날짜 */}
+                            <span>
+                                {item.writer?.name} · {new Date(item.regDate).toLocaleDateString()}
+                            </span>
+
+                            {/* ★ [변경] 댓글 개수를 오른쪽 끝으로 이동 */}
+                            {item.commentCount > 0 && (
+                                <span style={{
+                                    fontWeight:'bold',
+                                    color:'#e65100',
+                                    display:'flex',
+                                    alignItems:'center',
+                                    gap:'4px',
+                                    backgroundColor:'#fff3e0',
+                                    padding:'2px 8px',
+                                    borderRadius:'10px'
+                                }}>
+                                     💬 {item.commentCount}
+                                 </span>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>

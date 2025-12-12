@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -40,4 +43,13 @@ public class LostItem {
     private String kakaoLink;
 
     private boolean isPhoneOpen;  //전화번호 공개 여부 (true면 공개)
+
+    @OneToMany(mappedBy = "lostItem", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Comment> comments;
+
+    // ★ [추가] 댓글 개수만 알려주는 가상의 필드 (JSON에 포함됨!)
+    public int getCommentCount() {
+        return comments == null ? 0 : comments.size();
+    }
 }
